@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">YAMA</string>
+    <string name="login_button">Login</string>
+    <string name="github_token_hint">GitHub token</string>
+    <string name="github_org_hint">Organization ID</string>
+
+    <string name="followers">followers</string>
+    <string name="following">following</string>
+    <string name="email">email</string>
+    <string name="location">location</string>
+    <string name="blog">blog</string>
+    <string name="bio">bio</string>
+
+    <string name="sample_name">Sylvanas Windrunner</string>
+    <string name="sample_nickname">DarkLady</string>
+    <string name="sample_followers">55297129</string>
+    <string name="sample_following">46</string>
+    <string name="sample_email">sylvanas_warchief@horde.com</string>
+    <string name="sample_location">Orgrimmar, Azeroth</string>
+    <string name="sample_blog">https://twitter.com/warcraft</string>
+    <string name="sample_bio">Sylvanas was a member of the prominent Windrunner family of the high elves. Sylvanas was the middle sister between the oldest sister Alleria, and the youngest sister Vereesa. She also had a brother named Lirath. Her family lived at Windrunner Spire in the tranquil forests of Quel\'Thalas. Sylvanas joined the rangers and eventually became their leader, rising to the rank of Ranger-General of Silvermoon, military leader of all high elven forces.</string>
+
+    <string name="save_credentials_checkbox">Remember my credentials</string>
+</resources>
