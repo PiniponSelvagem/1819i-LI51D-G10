@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_login.*
-import pt.isel.pdm.i41n.g6.yama.data.HttpRequests
 
 
 class LoginActivity : AppCompatActivity() {
