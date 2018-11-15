@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">YAMA</string>
+    <string name="title_activity_teams">Teams</string>
+    <string name="title_activity_chat">Chat</string>
+
+    <string name="team_details">Team Details</string>
+
     <string name="login_button">Login</string>
     <string name="github_token_hint">GitHub token</string>
     <string name="github_org_hint">Organization ID</string>

@@ -23,7 +23,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserActivity" />
-        <activity android:name=".teams.TeamsActivity" />
+        <activity
+            android:name=".organization.TeamsActivity"
+            android:label="@string/title_activity_teams" />
+        <activity android:name=".teams.ChatActivity" />
     </application>
 
 </manifest>

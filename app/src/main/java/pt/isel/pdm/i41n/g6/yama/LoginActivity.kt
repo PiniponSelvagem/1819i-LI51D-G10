@@ -13,8 +13,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.i41n.g6.yama.data.LoggedUser
 import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
-import pt.isel.pdm.i41n.g6.yama.teams.TeamsActivity
+import pt.isel.pdm.i41n.g6.yama.organization.TeamsActivity
 
+//TODO: save state
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var preferences : SharedPreferences
@@ -32,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         Volley.init(this)
 
         login_button.setOnClickListener {
-            login_button.isEnabled = false
+            disableInteraction()
 
             if (login_checkbox.isChecked) {
                 saveCredentials()
@@ -64,9 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(i)
                 finish()
             } catch (e: JSONException) {
-                println(e.message)
-            } finally {
-                login_button.isEnabled = true
+                e.printStackTrace() //TODO: do logging
             }
         }
     }
@@ -74,7 +73,6 @@ class LoginActivity : AppCompatActivity() {
     private fun createReqErrorListener(): Response.ErrorListener = Response.ErrorListener {
         error ->
         run {
-            login_button.isEnabled = true
             if (error is TimeoutError || error is NoConnectionError) {
                 Toast.makeText(this, "Timeout", Toast.LENGTH_LONG).show()
             } else if (error is AuthFailureError) {
@@ -86,10 +84,25 @@ class LoginActivity : AppCompatActivity() {
             } else if (error is ParseError) {
                 Toast.makeText(this, "Parse Error", Toast.LENGTH_LONG).show()
             }
+
+            enableInteraction()
         }
     }
 
 
+    private fun disableInteraction() {
+        login_token.isEnabled = false
+        login_orgID.isEnabled = false
+        login_checkbox.isEnabled = false
+        login_button.isEnabled = false
+    }
+
+    private fun enableInteraction() {
+        login_token.isEnabled = true
+        login_orgID.isEnabled = true
+        login_checkbox.isEnabled = true
+        login_button.isEnabled = true
+    }
 
 
 
