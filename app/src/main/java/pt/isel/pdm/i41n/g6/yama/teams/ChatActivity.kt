@@ -1,5 +1,6 @@
 package pt.isel.pdm.i41n.g6.yama.teams
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.os.Bundle
@@ -8,11 +9,13 @@ import pt.isel.pdm.i41n.g6.yama.data.Team
 
 class ChatActivity : AppCompatActivity() {
 
+    private lateinit var team: Team
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        val team = intent.getSerializableExtra("team") as Team
+        team = intent.getSerializableExtra("team") as Team
         title = team.name
     }
 
@@ -33,5 +36,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun showTeamDetails() {
+        val i = Intent(this, DetailsActivity::class.java)
+        i.putExtra("team", team)
+        startActivity(i)
     }
 }

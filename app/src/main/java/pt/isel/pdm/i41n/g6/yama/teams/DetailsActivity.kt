@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.organization
+package pt.isel.pdm.i41n.g6.yama.teams
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import com.android.volley.*
-import kotlinx.android.synthetic.main.activity_teams.*
+import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -17,41 +18,43 @@ import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
 import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
 
-//TODO: save state
-class TeamsActivity : AppCompatActivity() {
+class DetailsActivity : AppCompatActivity() {
     private lateinit var preferences : SharedPreferences
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var layoutMgr: RecyclerView.LayoutManager
 
-    private var teams = mutableListOf<Team>()
+    private lateinit var token: String
+    private lateinit var team: Team
+    private var teamUsers = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_teams)
+        setContentView(R.layout.activity_details)
+
+        team = intent.getSerializableExtra("team") as Team
+        title = team.name
 
         preferences = this.getSharedPreferences("login", Context.MODE_PRIVATE)
-        val token = "token ${preferences.getString(R.string.spKey__login_token.toString(), "")}"
-        val orgID = preferences.getString(R.string.spKey__login_orgID.toString(), "")
+        token = "token ${preferences.getString(R.string.spKey__login_token.toString(), "")}"
 
-        //TODO: this loggerUser should go to the activity that will display user info
-        val loggedUser = intent.getSerializableExtra("loggedUser") as User
+        val team = intent.getSerializableExtra("team") as Team
 
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = token
 
         val queue = Volley.getRequestQueue()
         val myReq = Volley.HeadersStringRequest(Request.Method.GET,
-                "https://api.github.com/orgs/$orgID/teams",
+                "https://api.github.com/teams/${team.id}/members",
                 headers,
                 createReqSuccessListener(),
                 createReqErrorListener())
         queue.add(myReq)
 
         layoutMgr = LinearLayoutManager(this)
-        viewAdapter = TeamsAdapter(teams)
+        viewAdapter = TeamAdapter(teamUsers)
 
-        teams_recycler_view.apply {
+        team_recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = layoutMgr
             adapter = viewAdapter
@@ -62,9 +65,9 @@ class TeamsActivity : AppCompatActivity() {
         response ->
         run {
             try {
-                teamsData(response)
+                teamData(response)
                 viewAdapter.notifyDataSetChanged()
-                Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show()
+                //Toast.makeText(this, teamUsers.toString(), Toast.LENGTH_LONG).show()
             } catch (e: JSONException) {
                 e.printStackTrace() //TODO: do logging
             }
@@ -89,16 +92,53 @@ class TeamsActivity : AppCompatActivity() {
         }
     }
 
-    //TODO: make teams.add more clear, maybe return the mutableList instead
-    //TODO: ATM CAN RETURN DUPLICATED TEAMS (the team that the user is in)
-    private fun teamsData(response: String) {
+    private fun teamData(response: String) {
         val jArray = JSONArray(response)
-        var jObj : JSONObject
-
+        var jObj: JSONObject
         for ( i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
-            teams.add(Team(jObj.getString("name"), jObj.getInt("id")))
+            //TODO: improve
+            val headers = mutableMapOf<String, String>()
+            headers["Authorization"] = token
+            val queue = Volley.getRequestQueue()
+            val myReq = Volley.HeadersStringRequest(Request.Method.GET,
+                    jObj.getString("url"),
+                    headers,
+                    createReqSuccessListenerUser(),
+                    createReqErrorListener())
+            queue.add(myReq)
+            //TODO: end
         }
     }
 
+    private fun createReqSuccessListenerUser(): Response.Listener<String> = Response.Listener {
+        response ->
+        run {
+            try {
+                teamUsers.add(getUserData(response))
+                viewAdapter.notifyDataSetChanged()
+            } catch (e: JSONException) {
+                e.printStackTrace() //TODO: do logging
+            }
+        }
+    }
+
+    private fun getUserData(response: String) : User {
+        val jObj = JSONObject(response)
+        return User(
+                "",
+                "",
+
+                jObj.getString("login"),
+                jObj.getString("name"),
+                jObj.getInt("id"),
+                jObj.getString("avatar_url"),
+                jObj.getInt("followers"),
+                jObj.getInt("following"),
+                jObj.getString("email"),
+                jObj.getString("location"),
+                jObj.getString("blog"),
+                jObj.getString("bio")
+        )
+    }
 }

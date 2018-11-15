@@ -27,6 +27,7 @@
             android:name=".organization.TeamsActivity"
             android:label="@string/title_activity_teams" />
         <activity android:name=".teams.ChatActivity" />
+        <activity android:name=".teams.DetailsActivity"></activity>
     </application>
 
 </manifest>

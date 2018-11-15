@@ -2,7 +2,7 @@ package pt.isel.pdm.i41n.g6.yama.data
 
 import java.io.Serializable
 
-data class LoggedUser(
+data class User(
         val token:      String,
         val orgID:      String,
 

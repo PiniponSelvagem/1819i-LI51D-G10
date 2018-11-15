@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="spKey__login_checkbox">loginCheckBox</string>
     <string name="spKey__login_orgID">loginOrgID</string>
     <string name="spKey__login_token">loginToken</string>
 </resources>
