@@ -8,7 +8,8 @@ import com.android.volley.toolbox.StringRequest
 
 object Volley {
 
-    private lateinit var queue: RequestQueue
+    private lateinit var queue:       RequestQueue
+
 
     fun init(context: Context) {
         queue = Volley.newRequestQueue(context)
@@ -23,12 +24,11 @@ object Volley {
                                val hdrs: Map<String, String>,
                                listener: Response.Listener<String>,
                                errorListener: Response.ErrorListener
-    ) : StringRequest(method,url, listener, errorListener ) {
+    ) : StringRequest(method, url, listener, errorListener) {
 
         override fun getHeaders(): MutableMap<String, String> = hdrs.toMutableMap()
 
     }
-}
 
 
 
@@ -82,3 +82,5 @@ object Volley {
 
     }
     */
+
+}

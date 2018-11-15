@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
 import pt.isel.pdm.i41n.g6.yama.R
@@ -14,7 +15,7 @@ class TeamAdapter(private val data: MutableList<User>) : RecyclerView.Adapter<Te
     private val TAG = TeamAdapter::class.java.simpleName
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //TODO: avatar
+        val avatar      = itemView.findViewById<ImageView>(R.id.user_avatar)
         val nickname    = itemView.findViewById<TextView>(R.id.user_nickname)
         val name        = itemView.findViewById<TextView>(R.id.user_name)
         val followers   = itemView.findViewById<TextView>(R.id.user_followers)
@@ -33,11 +34,16 @@ class TeamAdapter(private val data: MutableList<User>) : RecyclerView.Adapter<Te
         val bio         = itemView.findViewById<TextView>(R.id.user_bio)
 
         fun bindItems(user: User) {
+            if (user.avatar != null) avatar.setImageBitmap(user.avatar)
             nickname.text = user.nickname
+
+            if (user.name != "null") name.text = user.name
+            else name.visibility = View.GONE
+
             name.text = user.name
             followers.text = user.followers.toString()
             following.text = user.following.toString()
-            
+
             if (user.email != "null") email.text = user.email
             else emailRow.visibility = View.GONE
 

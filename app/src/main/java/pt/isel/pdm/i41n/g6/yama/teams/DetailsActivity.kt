@@ -2,14 +2,16 @@ package pt.isel.pdm.i41n.g6.yama.teams
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.ImageView
 import android.widget.Toast
 import com.android.volley.*
+import com.android.volley.toolbox.ImageRequest
 import kotlinx.android.synthetic.main.activity_details.*
-import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -17,6 +19,7 @@ import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
 import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
+
 
 class DetailsActivity : AppCompatActivity() {
     private lateinit var preferences : SharedPreferences
@@ -27,6 +30,7 @@ class DetailsActivity : AppCompatActivity() {
     private lateinit var token: String
     private lateinit var team: Team
     private var teamUsers = mutableListOf<User>()
+    private val headers = mutableMapOf<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +44,6 @@ class DetailsActivity : AppCompatActivity() {
 
         val team = intent.getSerializableExtra("team") as Team
 
-        val headers = mutableMapOf<String, String>()
         headers["Authorization"] = token
 
         val queue = Volley.getRequestQueue()
@@ -125,7 +128,7 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun getUserData(response: String) : User {
         val jObj = JSONObject(response)
-        return User(
+        val user = User(
                 "",
                 "",
 
@@ -140,5 +143,31 @@ class DetailsActivity : AppCompatActivity() {
                 jObj.getString("blog"),
                 jObj.getString("bio")
         )
+
+        loadImage(user, jObj.getString("avatar_url"))
+
+        return user
+    }
+
+    //TODO: make it more pretty and maybe move this to other place, but GOD DAMN IT FINALLY WORKS!!!
+    private fun loadImage(user: User, url: String) {
+        val imageRequest = ImageRequest(
+                url,
+                Response.Listener {
+                    user.avatar = it
+                    viewAdapter.notifyDataSetChanged()
+                },
+                500, 500,
+                ImageView.ScaleType.CENTER,
+                Bitmap.Config.ARGB_8888,
+                Response.ErrorListener {
+                    TODO("NOT IMPLEMENTED")
+                }
+        )
+
+        headers["Authorization"] = token
+
+        val queue = Volley.getRequestQueue()
+        queue.add(imageRequest)
     }
 }
