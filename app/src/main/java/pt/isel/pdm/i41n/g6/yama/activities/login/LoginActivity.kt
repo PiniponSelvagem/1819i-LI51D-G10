@@ -40,14 +40,19 @@ class LoginActivity : AppCompatActivity() {
             val headers = mutableMapOf<String, String>()
             headers["Authorization"] = "token ${login_token.text}"
 
-
-            val queue = HttpRequests.getRequestQueue()
-            val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
-                    "https://api.github.com/user",
-                    headers,
-                    createReqSuccessListener(),
-                    createReqErrorListener())
-            queue.add(myReq)
+            HttpRequests.getString("https://api.github.com/user", headers) {
+                str ->
+                run {
+                    try {
+                        val i = Intent(this, TeamsActivity::class.java)
+                        i.putExtra("loggedUser", loggedUserData(str))
+                        startActivity(i)
+                        finish()
+                    } catch (e: JSONException) {
+                        e.printStackTrace() //TODO: do logging
+                    }
+                }
+            }
         }
     }
 
@@ -110,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
         pEditor.putString(R.string.spKey__login_token.toString(), login_token.text.toString())
     }
 
+    //TODO: maybe use DTO
     private fun loggedUserData(response: String) : User {
         val jObj = JSONObject(response)
         return User(

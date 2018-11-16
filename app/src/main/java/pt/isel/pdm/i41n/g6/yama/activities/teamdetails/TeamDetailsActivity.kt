@@ -47,13 +47,17 @@ class TeamDetailsActivity : AppCompatActivity() {
 
         headers["Authorization"] = token
 
-        val queue = HttpRequests.getRequestQueue()
-        val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
-                "https://api.github.com/teams/${team.id}/members",
-                headers,
-                createReqSuccessListener(),
-                createReqErrorListener())
-        queue.add(myReq)
+        HttpRequests.getString("https://api.github.com/teams/${team.id}/members", headers) {
+            str ->
+            run {
+                try {
+                    teamData(str)
+                    viewAdapter.notifyDataSetChanged()
+                } catch (e: JSONException) {
+                    e.printStackTrace() //TODO: do logging
+                }
+            }
+        }
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamAdapter(teamUsers)
@@ -62,19 +66,6 @@ class TeamDetailsActivity : AppCompatActivity() {
             setHasFixedSize(true)
             layoutManager = layoutMgr
             adapter = viewAdapter
-        }
-    }
-
-    private fun createReqSuccessListener(): Response.Listener<String> = Response.Listener {
-        response ->
-        run {
-            try {
-                teamData(response)
-                viewAdapter.notifyDataSetChanged()
-                //Toast.makeText(this, teamUsers.toString(), Toast.LENGTH_LONG).show()
-            } catch (e: JSONException) {
-                e.printStackTrace() //TODO: do logging
-            }
         }
     }
 
@@ -101,28 +92,17 @@ class TeamDetailsActivity : AppCompatActivity() {
         var jObj: JSONObject
         for ( i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
-            //TODO: improve
-            val headers = mutableMapOf<String, String>()
-            headers["Authorization"] = token
-            val queue = HttpRequests.getRequestQueue()
-            val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
-                    jObj.getString("url"),
-                    headers,
-                    createReqSuccessListenerUser(),
-                    createReqErrorListener())
-            queue.add(myReq)
-            //TODO: end
-        }
-    }
 
-    private fun createReqSuccessListenerUser(): Response.Listener<String> = Response.Listener {
-        response ->
-        run {
-            try {
-                teamUsers.add(getUserData(response))
-                viewAdapter.notifyDataSetChanged()
-            } catch (e: JSONException) {
-                e.printStackTrace() //TODO: do logging
+            HttpRequests.getString(jObj.getString("url"), headers) {
+                str ->
+                run {
+                    try {
+                        teamUsers.add(getUserData(str))
+                        viewAdapter.notifyDataSetChanged()
+                    } catch (e: JSONException) {
+                        e.printStackTrace() //TODO: do logging
+                    }
+                }
             }
         }
     }
@@ -145,30 +125,14 @@ class TeamDetailsActivity : AppCompatActivity() {
                 jObj.getString("bio")
         )
 
-        loadImage(user, jObj.getString("avatar_url"))
+        HttpRequests.getBitmap(jObj.getString("avatar_url"), 500, 500, headers) {
+            bitmap ->
+            run {
+                user.avatar = bitmap
+                viewAdapter.notifyDataSetChanged()
+            }
+        }
 
         return user
-    }
-
-    //TODO: make it more pretty and maybe move this to other place, but GOD DAMN IT FINALLY WORKS!!!
-    private fun loadImage(user: User, url: String) {
-        val imageRequest = ImageRequest(
-                url,
-                Response.Listener {
-                    user.avatar = it
-                    viewAdapter.notifyDataSetChanged()
-                },
-                500, 500,
-                ImageView.ScaleType.CENTER,
-                Bitmap.Config.ARGB_8888,
-                Response.ErrorListener {
-                    TODO("NOT IMPLEMENTED")
-                }
-        )
-
-        headers["Authorization"] = token
-
-        val queue = HttpRequests.getRequestQueue()
-        queue.add(imageRequest)
     }
 }

@@ -41,13 +41,18 @@ class TeamsActivity : AppCompatActivity() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = token
 
-        val queue = HttpRequests.getRequestQueue()
-        val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
-                "https://api.github.com/orgs/$orgID/teams",
-                headers,
-                createReqSuccessListener(),
-                createReqErrorListener())
-        queue.add(myReq)
+        HttpRequests.getString("https://api.github.com/orgs/$orgID/teams", headers) {
+            str ->
+            run {
+                try {
+                    teamsData(str)
+                    viewAdapter.notifyDataSetChanged()
+                    Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show()
+                } catch (e: JSONException) {
+                    e.printStackTrace() //TODO: do logging
+                }
+            }
+        }
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamsAdapter(teams)
@@ -56,19 +61,6 @@ class TeamsActivity : AppCompatActivity() {
             setHasFixedSize(true)
             layoutManager = layoutMgr
             adapter = viewAdapter
-        }
-    }
-
-    private fun createReqSuccessListener(): Response.Listener<String> = Response.Listener {
-        response ->
-        run {
-            try {
-                teamsData(response)
-                viewAdapter.notifyDataSetChanged()
-                Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show()
-            } catch (e: JSONException) {
-                e.printStackTrace() //TODO: do logging
-            }
         }
     }
 
