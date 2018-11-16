@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.data.httprequests
+package pt.isel.pdm.i41n.g6.yama.network
 
 import android.content.Context
 import com.android.volley.*
@@ -6,9 +6,9 @@ import com.android.volley.toolbox.Volley
 import com.android.volley.toolbox.StringRequest
 
 
-object Volley {
+object HttpRequests {
 
-    private lateinit var queue:       RequestQueue
+    private lateinit var queue: RequestQueue
 
 
     fun init(context: Context) {

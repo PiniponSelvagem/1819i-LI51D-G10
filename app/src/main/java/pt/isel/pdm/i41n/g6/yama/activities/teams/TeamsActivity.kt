@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.organization
+package pt.isel.pdm.i41n.g6.yama.activities.teams
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,7 +15,8 @@ import org.json.JSONObject
 import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
-import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
+import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
+import pt.isel.pdm.i41n.g6.yama.activities.teams.adapters.TeamsAdapter
 
 //TODO: save state
 class TeamsActivity : AppCompatActivity() {
@@ -40,8 +41,8 @@ class TeamsActivity : AppCompatActivity() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = token
 
-        val queue = Volley.getRequestQueue()
-        val myReq = Volley.HeadersStringRequest(Request.Method.GET,
+        val queue = HttpRequests.getRequestQueue()
+        val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
                 "https://api.github.com/orgs/$orgID/teams",
                 headers,
                 createReqSuccessListener(),
@@ -90,7 +91,6 @@ class TeamsActivity : AppCompatActivity() {
     }
 
     //TODO: make teams.add more clear, maybe return the mutableList instead
-    //TODO: ATM CAN RETURN DUPLICATED TEAMS (the team that the user is in)
     private fun teamsData(response: String) {
         val jArray = JSONArray(response)
         var jObj : JSONObject

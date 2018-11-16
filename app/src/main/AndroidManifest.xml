@@ -15,19 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activities.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserActivity" />
+        <activity android:name=".activities.userdetails.UserDetailsActivity" />
         <activity
-            android:name=".organization.TeamsActivity"
+            android:name=".activities.teams.TeamsActivity"
             android:label="@string/title_activity_teams" />
-        <activity android:name=".teams.ChatActivity" />
-        <activity android:name=".teams.DetailsActivity"></activity>
+        <activity android:name=".activities.chat.ChatActivity" />
+        <activity android:name=".activities.teamdetails.TeamDetailsActivity" />
     </application>
 
 </manifest>

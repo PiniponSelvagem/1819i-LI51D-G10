@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.organization
+package pt.isel.pdm.i41n.g6.yama.activities.teams.adapters
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.Team
-import pt.isel.pdm.i41n.g6.yama.teams.ChatActivity
+import pt.isel.pdm.i41n.g6.yama.activities.chat.ChatActivity
 
 class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<TeamsAdapter.ItemViewHolder>() {
 

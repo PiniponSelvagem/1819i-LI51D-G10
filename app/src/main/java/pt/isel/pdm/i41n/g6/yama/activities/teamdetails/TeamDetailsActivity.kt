@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.teams
+package pt.isel.pdm.i41n.g6.yama.activities.teamdetails
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,10 +18,11 @@ import org.json.JSONObject
 import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
-import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
+import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
+import pt.isel.pdm.i41n.g6.yama.activities.teamdetails.adapters.TeamAdapter
 
 
-class DetailsActivity : AppCompatActivity() {
+class TeamDetailsActivity : AppCompatActivity() {
     private lateinit var preferences : SharedPreferences
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
@@ -46,8 +47,8 @@ class DetailsActivity : AppCompatActivity() {
 
         headers["Authorization"] = token
 
-        val queue = Volley.getRequestQueue()
-        val myReq = Volley.HeadersStringRequest(Request.Method.GET,
+        val queue = HttpRequests.getRequestQueue()
+        val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
                 "https://api.github.com/teams/${team.id}/members",
                 headers,
                 createReqSuccessListener(),
@@ -103,8 +104,8 @@ class DetailsActivity : AppCompatActivity() {
             //TODO: improve
             val headers = mutableMapOf<String, String>()
             headers["Authorization"] = token
-            val queue = Volley.getRequestQueue()
-            val myReq = Volley.HeadersStringRequest(Request.Method.GET,
+            val queue = HttpRequests.getRequestQueue()
+            val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
                     jObj.getString("url"),
                     headers,
                     createReqSuccessListenerUser(),
@@ -167,7 +168,7 @@ class DetailsActivity : AppCompatActivity() {
 
         headers["Authorization"] = token
 
-        val queue = Volley.getRequestQueue()
+        val queue = HttpRequests.getRequestQueue()
         queue.add(imageRequest)
     }
 }

@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama
+package pt.isel.pdm.i41n.g6.yama.activities.login
 
 import android.content.Context
 import android.content.Intent
@@ -11,9 +11,10 @@ import com.android.volley.*
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONException
 import org.json.JSONObject
+import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.User
-import pt.isel.pdm.i41n.g6.yama.data.httprequests.Volley
-import pt.isel.pdm.i41n.g6.yama.organization.TeamsActivity
+import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
+import pt.isel.pdm.i41n.g6.yama.activities.teams.TeamsActivity
 
 //TODO: save state
 class LoginActivity : AppCompatActivity() {
@@ -40,8 +41,8 @@ class LoginActivity : AppCompatActivity() {
             headers["Authorization"] = "token ${login_token.text}"
 
 
-            val queue = Volley.getRequestQueue()
-            val myReq = Volley.HeadersStringRequest(Request.Method.GET,
+            val queue = HttpRequests.getRequestQueue()
+            val myReq = HttpRequests.HeadersStringRequest(Request.Method.GET,
                     "https://api.github.com/user",
                     headers,
                     createReqSuccessListener(),

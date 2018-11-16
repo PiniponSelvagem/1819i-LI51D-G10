@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.teams
+package pt.isel.pdm.i41n.g6.yama.activities.chat
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.view.*
 import android.os.Bundle
 import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.Team
+import pt.isel.pdm.i41n.g6.yama.activities.teamdetails.TeamDetailsActivity
 
 class ChatActivity : AppCompatActivity() {
 
@@ -36,7 +37,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun showTeamDetails() {
-        val i = Intent(this, DetailsActivity::class.java)
+        val i = Intent(this, TeamDetailsActivity::class.java)
         i.putExtra("team", team)
         startActivity(i)
     }
