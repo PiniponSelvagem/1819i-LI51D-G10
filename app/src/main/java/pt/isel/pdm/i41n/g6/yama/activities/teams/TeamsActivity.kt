@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
-import com.android.volley.*
 import kotlinx.android.synthetic.main.activity_teams.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -17,6 +16,7 @@ import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
 import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
 import pt.isel.pdm.i41n.g6.yama.activities.teams.adapters.TeamsAdapter
+import pt.isel.pdm.i41n.g6.yama.utils.showHttpErrorToast
 
 //TODO: save state
 class TeamsActivity : AppCompatActivity() {
@@ -41,18 +41,20 @@ class TeamsActivity : AppCompatActivity() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = token
 
-        HttpRequests.getString("https://api.github.com/orgs/$orgID/teams", headers) {
-            str ->
-            run {
-                try {
-                    teamsData(str)
-                    viewAdapter.notifyDataSetChanged()
-                    Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show()
-                } catch (e: JSONException) {
-                    e.printStackTrace() //TODO: do logging
-                }
-            }
-        }
+        HttpRequests.getString("https://api.github.com/orgs/$orgID/teams", headers,
+                resp = { str ->
+                    run {
+                        try {
+                            teamsData(str)
+                            viewAdapter.notifyDataSetChanged()
+                            Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show()
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: do logging
+                        }
+                    }
+                },
+                err = { e -> showHttpErrorToast(this, e) }
+        )
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamsAdapter(teams)
@@ -61,24 +63,6 @@ class TeamsActivity : AppCompatActivity() {
             setHasFixedSize(true)
             layoutManager = layoutMgr
             adapter = viewAdapter
-        }
-    }
-
-    //TODO: this looks like shit
-    private fun createReqErrorListener(): Response.ErrorListener = Response.ErrorListener {
-        error ->
-        run {
-            if (error is TimeoutError || error is NoConnectionError) {
-                Toast.makeText(this, "Timeout", Toast.LENGTH_LONG).show()
-            } else if (error is AuthFailureError) {
-                Toast.makeText(this, "Authentication Error", Toast.LENGTH_LONG).show()
-            } else if (error is ServerError) {
-                Toast.makeText(this, "Server Error", Toast.LENGTH_LONG).show()
-            } else if (error is NetworkError) {
-                Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show()
-            } else if (error is ParseError) {
-                Toast.makeText(this, "Parse Error", Toast.LENGTH_LONG).show()
-            }
         }
     }
 

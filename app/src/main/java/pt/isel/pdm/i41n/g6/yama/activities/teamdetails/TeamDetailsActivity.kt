@@ -2,24 +2,20 @@ package pt.isel.pdm.i41n.g6.yama.activities.teamdetails
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.ImageView
-import android.widget.Toast
-import com.android.volley.*
-import com.android.volley.toolbox.ImageRequest
 import kotlinx.android.synthetic.main.activity_details.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.i41n.g6.yama.R
+import pt.isel.pdm.i41n.g6.yama.activities.teamdetails.adapters.TeamAdapter
 import pt.isel.pdm.i41n.g6.yama.data.Team
 import pt.isel.pdm.i41n.g6.yama.data.User
 import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
-import pt.isel.pdm.i41n.g6.yama.activities.teamdetails.adapters.TeamAdapter
+import pt.isel.pdm.i41n.g6.yama.utils.showHttpErrorToast
 
 
 class TeamDetailsActivity : AppCompatActivity() {
@@ -47,17 +43,19 @@ class TeamDetailsActivity : AppCompatActivity() {
 
         headers["Authorization"] = token
 
-        HttpRequests.getString("https://api.github.com/teams/${team.id}/members", headers) {
-            str ->
-            run {
-                try {
-                    teamData(str)
-                    viewAdapter.notifyDataSetChanged()
-                } catch (e: JSONException) {
-                    e.printStackTrace() //TODO: do logging
-                }
-            }
-        }
+        HttpRequests.getString("https://api.github.com/teams/${team.id}/members", headers,
+                resp = { str ->
+                    run {
+                        try {
+                            teamData(str)
+                            viewAdapter.notifyDataSetChanged()
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: do logging
+                        }
+                    }
+                },
+                err = { e -> showHttpErrorToast(this, e) }
+        )
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamAdapter(teamUsers)
@@ -69,41 +67,25 @@ class TeamDetailsActivity : AppCompatActivity() {
         }
     }
 
-    //TODO: this looks like shit
-    private fun createReqErrorListener(): Response.ErrorListener = Response.ErrorListener {
-        error ->
-        run {
-            if (error is TimeoutError || error is NoConnectionError) {
-                Toast.makeText(this, "Timeout", Toast.LENGTH_LONG).show()
-            } else if (error is AuthFailureError) {
-                Toast.makeText(this, "Authentication Error", Toast.LENGTH_LONG).show()
-            } else if (error is ServerError) {
-                Toast.makeText(this, "Server Error", Toast.LENGTH_LONG).show()
-            } else if (error is NetworkError) {
-                Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show()
-            } else if (error is ParseError) {
-                Toast.makeText(this, "Parse Error", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     private fun teamData(response: String) {
         val jArray = JSONArray(response)
         var jObj: JSONObject
         for ( i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
 
-            HttpRequests.getString(jObj.getString("url"), headers) {
-                str ->
-                run {
-                    try {
-                        teamUsers.add(getUserData(str))
-                        viewAdapter.notifyDataSetChanged()
-                    } catch (e: JSONException) {
-                        e.printStackTrace() //TODO: do logging
-                    }
-                }
-            }
+            HttpRequests.getString(jObj.getString("url"), headers,
+                    resp = { str ->
+                        run {
+                            try {
+                                teamUsers.add(getUserData(str))
+                                viewAdapter.notifyDataSetChanged()
+                            } catch (e: JSONException) {
+                                e.printStackTrace() //TODO: do logging
+                            }
+                        }
+                    },
+                    err = { e -> showHttpErrorToast(this, e) }
+            )
         }
     }
 
@@ -125,13 +107,16 @@ class TeamDetailsActivity : AppCompatActivity() {
                 jObj.getString("bio")
         )
 
-        HttpRequests.getBitmap(jObj.getString("avatar_url"), 500, 500, headers) {
-            bitmap ->
-            run {
-                user.avatar = bitmap
-                viewAdapter.notifyDataSetChanged()
-            }
-        }
+        //TODO: getBitmap values maxWidth=500, maxHeight=500 should be the imageView sizes
+        HttpRequests.getBitmap(jObj.getString("avatar_url"), 500, 500,
+                resp = { bitmap ->
+                    run {
+                        user.avatar = bitmap
+                        viewAdapter.notifyDataSetChanged()
+                    }
+                },
+                err = { e -> showHttpErrorToast(this, e) }
+        )
 
         return user
     }

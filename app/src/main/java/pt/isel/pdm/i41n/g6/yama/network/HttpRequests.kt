@@ -7,6 +7,7 @@ import com.android.volley.*
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
 import com.android.volley.toolbox.StringRequest
+import java.lang.Exception
 
 
 object HttpRequests {
@@ -24,12 +25,13 @@ object HttpRequests {
             method: Int,
             url: String,
             headers: Map<String, String>,
-            cb: (String) -> Unit
+            resp: (String) -> Unit,
+            err: (Exception) -> Unit
     ) {
         val req = HeadersStringRequest(
                 Request.Method.GET, url, headers,
-                onResponse(cb),
-                onError()
+                onResponse(resp),
+                onError(err)
         )
         queue.add(req)
     }
@@ -39,31 +41,35 @@ object HttpRequests {
             headers: Map<String, String>,
             maxWidth: Int,
             maxHeight: Int,
-            cb: (Bitmap) -> Unit
+            resp: (Bitmap) -> Unit,
+            err: (Exception) -> Unit
     ) {
         val req = HeadersImageRequest(
                 url, headers,
                 maxWidth, maxHeight,
-                onResponse(cb),
-                onError()
+                onResponse(resp),
+                onError(err)
         )
         queue.add(req)
     }
 
-    fun getString(url: String, headers: Map<String, String> = mapOf(), cb: (String) -> Unit) {
-        requestString(Request.Method.GET, url, headers, cb)
+    fun getString(url: String, headers: Map<String, String> = mapOf(),
+                  resp: (String) -> Unit, err: (Exception) -> Unit) {
+        requestString(Request.Method.GET, url, headers, resp, err)
     }
 
-    fun getBitmap(url: String, maxWidth: Int, maxHeight: Int, headers: Map<String, String> = mapOf(), cb: (Bitmap) -> Unit) {
-        requestBitmap(url, headers, maxWidth, maxHeight, cb)
+    fun getBitmap(url: String, maxWidth: Int, maxHeight: Int, headers: Map<String, String> = mapOf(),
+                  resp: (Bitmap) -> Unit, err: (Exception) -> Unit) {
+        requestBitmap(url, headers, maxWidth, maxHeight, resp, err)
     }
 
-    private fun <T> onResponse(cb: (T) -> Unit): Response.Listener<T> = Response.Listener { str -> cb(str) }
+    private fun <T> onResponse(resp: (T) -> Unit): Response.Listener<T> = Response.Listener {
+        str -> resp(str)
+    }
 
     //TODO: WILL CRASH APP, to implement
-    private fun onError(): Response.ErrorListener = Response.ErrorListener {
-        TODO("NOT IMPLEMENTED")
-        //err -> throw Exception(err.message)
+    private fun onError(err: (Exception) -> Unit): Response.ErrorListener = Response.ErrorListener {
+        e -> err(e)
     }
 
 

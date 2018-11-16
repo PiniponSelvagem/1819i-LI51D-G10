@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.android.volley.*
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -15,6 +13,7 @@ import pt.isel.pdm.i41n.g6.yama.R
 import pt.isel.pdm.i41n.g6.yama.data.User
 import pt.isel.pdm.i41n.g6.yama.network.HttpRequests
 import pt.isel.pdm.i41n.g6.yama.activities.teams.TeamsActivity
+import pt.isel.pdm.i41n.g6.yama.utils.showHttpErrorToast
 
 //TODO: save state
 class LoginActivity : AppCompatActivity() {
@@ -40,53 +39,26 @@ class LoginActivity : AppCompatActivity() {
             val headers = mutableMapOf<String, String>()
             headers["Authorization"] = "token ${login_token.text}"
 
-            HttpRequests.getString("https://api.github.com/user", headers) {
-                str ->
-                run {
-                    try {
-                        val i = Intent(this, TeamsActivity::class.java)
-                        i.putExtra("loggedUser", loggedUserData(str))
-                        startActivity(i)
-                        finish()
-                    } catch (e: JSONException) {
-                        e.printStackTrace() //TODO: do logging
+            HttpRequests.getString("https://api.github.com/user", headers,
+                    resp = { str ->
+                        run {
+                            try {
+                                val i = Intent(this, TeamsActivity::class.java)
+                                i.putExtra("loggedUser", loggedUserData(str))
+                                startActivity(i)
+                                finish()
+                            } catch (e: JSONException) {
+                                e.printStackTrace() //TODO: do logging
+                            }
+                        }
+                    },
+                    err = { e ->
+                        run {
+                            enableInteraction()
+                            showHttpErrorToast(this, e)
+                        }
                     }
-                }
-            }
-        }
-    }
-
-    private fun createReqSuccessListener(): Response.Listener<String> = Response.Listener {
-        response ->
-        run {
-            try {
-                val i = Intent(this, TeamsActivity::class.java)
-                i.putExtra("loggedUser", loggedUserData(response))
-                startActivity(i)
-                finish()
-            } catch (e: JSONException) {
-                e.printStackTrace() //TODO: do logging
-            }
-        }
-    }
-
-    //TODO: this looks like shit
-    private fun createReqErrorListener(): Response.ErrorListener = Response.ErrorListener {
-        error ->
-        run {
-            if (error is TimeoutError || error is NoConnectionError) {
-                Toast.makeText(this, "Timeout", Toast.LENGTH_LONG).show()
-            } else if (error is AuthFailureError) {
-                Toast.makeText(this, "Authentication Error", Toast.LENGTH_LONG).show()
-            } else if (error is ServerError) {
-                Toast.makeText(this, "Server Error", Toast.LENGTH_LONG).show()
-            } else if (error is NetworkError) {
-                Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show()
-            } else if (error is ParseError) {
-                Toast.makeText(this, "Parse Error", Toast.LENGTH_LONG).show()
-            }
-
-            enableInteraction()
+            )
         }
     }
 
