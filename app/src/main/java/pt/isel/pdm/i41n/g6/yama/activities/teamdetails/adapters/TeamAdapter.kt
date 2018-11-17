@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
 import pt.isel.pdm.i41n.g6.yama.R
-import pt.isel.pdm.i41n.g6.yama.data.User
+import pt.isel.pdm.i41n.g6.yama.data.dto.User
 
 class TeamAdapter(private val data: MutableList<User>) : RecyclerView.Adapter<TeamAdapter.ItemViewHolder>() {
 

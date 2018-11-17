@@ -1,4 +1,4 @@
-package pt.isel.pdm.i41n.g6.yama.data
+package pt.isel.pdm.i41n.g6.yama.data.dto
 
 import java.io.Serializable
 

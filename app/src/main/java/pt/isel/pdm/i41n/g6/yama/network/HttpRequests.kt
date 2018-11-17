@@ -15,7 +15,7 @@ object HttpRequests {
 
     private lateinit var queue: RequestQueue
 
-    public fun init(context: Context) {
+    fun init(context: Context) {
         // Instantiate the RequestQueue.
         Log.i(TAG, "Init called")
         queue = Volley.newRequestQueue(context)
@@ -33,6 +33,9 @@ object HttpRequests {
                 onResponse(resp),
                 onError(err)
         )
+
+        //info (maybe for later use): https://stackoverflow.com/a/32879935
+        req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
         queue.add(req)
     }
 
@@ -50,6 +53,13 @@ object HttpRequests {
                 onResponse(resp),
                 onError(err)
         )
+
+        /*
+        disabled for now, since new images will have different url
+        but uncomment line below if a user updates their avatar, and this request "shows" the old image
+         */
+        //req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
+
         queue.add(req)
     }
 
@@ -64,10 +74,9 @@ object HttpRequests {
     }
 
     private fun <T> onResponse(resp: (T) -> Unit): Response.Listener<T> = Response.Listener {
-        str -> resp(str)
+        r -> resp(r)
     }
 
-    //TODO: WILL CRASH APP, to implement
     private fun onError(err: (Exception) -> Unit): Response.ErrorListener = Response.ErrorListener {
         e -> err(e)
     }

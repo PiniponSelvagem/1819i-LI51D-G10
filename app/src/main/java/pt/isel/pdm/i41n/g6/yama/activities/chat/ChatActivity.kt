@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.os.Bundle
 import pt.isel.pdm.i41n.g6.yama.R
-import pt.isel.pdm.i41n.g6.yama.data.Team
+import pt.isel.pdm.i41n.g6.yama.data.dto.Team
 import pt.isel.pdm.i41n.g6.yama.activities.teamdetails.TeamDetailsActivity
 
 class ChatActivity : AppCompatActivity() {
