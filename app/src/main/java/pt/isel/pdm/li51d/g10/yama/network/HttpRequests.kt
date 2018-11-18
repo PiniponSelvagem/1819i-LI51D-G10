@@ -68,7 +68,7 @@ object HttpRequests {
         requestString(Request.Method.GET, url, headers, resp, err)
     }
 
-    fun getBitmap(url: String, maxWidth: Int, maxHeight: Int, headers: Map<String, String> = mapOf(),
+    fun getBitmap(url: String, maxWidth: Int, maxHeight: Int, headers: Map<String, String>,
                   resp: (Bitmap) -> Unit, err: (Exception) -> Unit) {
         requestBitmap(url, headers, maxWidth, maxHeight, resp, err)
     }

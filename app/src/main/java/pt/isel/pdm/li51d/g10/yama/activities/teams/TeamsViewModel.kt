@@ -8,11 +8,12 @@ import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
+import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
-import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 
 class TeamsViewModel : ViewModel() {
 
+    private lateinit var repository: Repository
     private val teamsLiveData = MutableLiveData<MutableList<Team>>()
     val teams: LiveData<MutableList<Team>> = teamsLiveData
 
@@ -26,7 +27,7 @@ class TeamsViewModel : ViewModel() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        HttpRequests.getString("https://api.github.com/orgs/$orgID/teams", headers,
+        repository.getTeams(headers, orgID,
                 resp = { str ->
                     run {
                         try {
@@ -43,9 +44,9 @@ class TeamsViewModel : ViewModel() {
 
     private fun teamsData(response: String) {
         val jArray = JSONArray(response)
-        var jObj : JSONObject
+        var jObj: JSONObject
 
-        for ( i in 0 until jArray.length()) {
+        for (i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
             teamsLiveData.value!!.add(Team(jObj.getString("name"), jObj.getInt("id")))
         }

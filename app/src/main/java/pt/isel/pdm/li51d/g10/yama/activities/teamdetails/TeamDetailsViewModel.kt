@@ -8,11 +8,12 @@ import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
+import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
-import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 
 class TeamDetailsViewModel : ViewModel() {
 
+    private lateinit var repository: Repository
     private val teamUsersLiveData = MutableLiveData<MutableList<User>>()
     val teamUsers: LiveData<MutableList<User>> = teamUsersLiveData
 
@@ -20,16 +21,17 @@ class TeamDetailsViewModel : ViewModel() {
         teamUsersLiveData.value = mutableListOf()
     }
 
-    fun loadTeam(teamID: Int, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+    fun loadTeamMembers(teamID: Int, width: Int, height: Int,
+                        success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         val token = Preferences.get(R.string.spKey__login_token.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        HttpRequests.getString("https://api.github.com/teams/$teamID/members", headers,
+        repository.getTeamMembers(headers, teamID,
                 resp = { str ->
                     run {
                         try {
-                            teamData(str, success, fail)
+                            teamData(str, width, height, success, fail)
                             success.invoke(Unit)
                         } catch (e: JSONException) {
                             e.printStackTrace() //TODO: do logging
@@ -40,21 +42,22 @@ class TeamDetailsViewModel : ViewModel() {
         )
     }
 
-    private fun teamData(response: String, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+    private fun teamData(response: String, width: Int, height: Int,
+                         success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         val token = Preferences.get(R.string.spKey__login_token.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
         val jArray = JSONArray(response)
         var jObj: JSONObject
-        for ( i in 0 until jArray.length()) {
+        for (i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
 
-            HttpRequests.getString(jObj.getString("url"), headers,
+            repository.getTeamData(jObj.getString("url"), headers,
                     resp = { str ->
                         run {
                             try {
-                                teamUsersLiveData.value!!.add(getUserData(str, success, fail))
+                                teamUsersLiveData.value!!.add(getUserData(str, width, height, success, fail))
                                 success.invoke(Unit)
                             } catch (e: JSONException) {
                                 e.printStackTrace() //TODO: do logging
@@ -67,7 +70,8 @@ class TeamDetailsViewModel : ViewModel() {
     }
 
 
-    private fun getUserData(response: String, success: (Unit) -> Unit, fail: (Exception) -> Unit) : User {
+    private fun getUserData(response: String, width: Int, height: Int,
+                            success: (Unit) -> Unit, fail: (Exception) -> Unit): User {
         val jObj = JSONObject(response)
         val user = User(
                 "",
@@ -85,8 +89,7 @@ class TeamDetailsViewModel : ViewModel() {
                 jObj.getString("bio")
         )
 
-        //TODO: getBitmap values maxWidth=500, maxHeight=500 should be the imageView sizes
-        HttpRequests.getBitmap(jObj.getString("avatar_url"), 500, 500,
+        repository.getUserImage(jObj.getString("avatar_url"), width, height,
                 resp = { bitmap ->
                     run {
                         user.avatar = bitmap

@@ -7,12 +7,12 @@ import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
+import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
-import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
-import java.lang.Exception
 
 class LoginViewModel : ViewModel() {
 
+    private lateinit var repository: Repository
     private val userLiveData = MutableLiveData<User>()
     val userLogged: LiveData<User> = userLiveData
 
@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        HttpRequests.getString("https://api.github.com/user", headers,
+        repository.getUser(headers,
                 resp = { str ->
                     run {
                         try {
@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
         )
     }
 
-    private fun loggedUserData(token: String, orgID: String, response: String) : User {
+    private fun loggedUserData(token: String, orgID: String, response: String): User {
         val jObj = JSONObject(response)
         return User(
                 "token $token",

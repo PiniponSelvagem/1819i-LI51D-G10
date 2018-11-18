@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 
 object Preferences {
 
-    private lateinit var preferences : SharedPreferences
+    private lateinit var preferences: SharedPreferences
 
     fun init(context: Context) {
         preferences = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -18,6 +18,7 @@ object Preferences {
             apply()
         }
     }
+
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun get(key: String): String = preferences.getString(key, "")
 

@@ -2,16 +2,16 @@ package pt.isel.pdm.li51d.g10.yama.activities.teams
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_teams.*
 import pt.isel.pdm.li51d.g10.yama.R
+import pt.isel.pdm.li51d.g10.yama.activities.teams.adapters.TeamsAdapter
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
-import pt.isel.pdm.li51d.g10.yama.activities.teams.adapters.TeamsAdapter
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 
 class TeamsActivity : AppCompatActivity() {

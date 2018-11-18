@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.recycler_view_user.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.adapters.TeamAdapter
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
@@ -30,7 +31,7 @@ class TeamDetailsActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(TeamDetailsViewModel::class.java)
         viewModel.teamUsers.observe(this, Observer<MutableList<User>> {})
 
-        viewModel.loadTeam(team.id,
+        viewModel.loadTeamMembers(team.id, user_avatar.maxWidth, user_avatar.maxHeight,
                 success = {
                     viewAdapter.notifyDataSetChanged()
                 },

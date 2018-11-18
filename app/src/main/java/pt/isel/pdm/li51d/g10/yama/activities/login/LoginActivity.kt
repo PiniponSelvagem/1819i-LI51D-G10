@@ -21,7 +21,7 @@ class LoginActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         viewModel.userLogged.observe(this, Observer<User> {})
 
-        login_button.setOnClickListener { _ ->
+        login_button.setOnClickListener {
             saveCredentials()
 
             disableInteraction()
@@ -53,7 +53,6 @@ class LoginActivity : AppCompatActivity() {
         login_orgID.isEnabled = true
         login_button.isEnabled = true
     }
-
 
 
     private fun checkSharedPreferences() {

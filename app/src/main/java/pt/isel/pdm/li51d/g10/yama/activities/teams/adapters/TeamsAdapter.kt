@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.activities.chat.ChatActivity
+import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 
 class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<TeamsAdapter.ItemViewHolder>() {
 
@@ -20,7 +20,7 @@ class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<T
 
         fun bindItems(team: Team) {
             teamName.text = team.name
-            teamId.text   = team.id.toString()
+            teamId.text = team.id.toString()
 
             itemView.setOnClickListener {
                 val i = Intent(itemView.context, ChatActivity::class.java)
@@ -33,7 +33,7 @@ class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<T
     /**
      * Create new views (invoked by the layout manager)
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         // create a new view
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_team, parent, false)
         return ItemViewHolder(view)
