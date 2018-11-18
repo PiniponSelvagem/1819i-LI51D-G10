@@ -12,7 +12,6 @@ import pt.isel.pdm.li51d.g10.yama.data.dto.User
 
 class LoginViewModel : ViewModel() {
 
-    private lateinit var repository: Repository
     private val userLiveData = MutableLiveData<User>()
     val userLogged: LiveData<User> = userLiveData
 
@@ -22,7 +21,7 @@ class LoginViewModel : ViewModel() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        repository.getUser(headers,
+        Repository.getUser(headers,
                 resp = { str ->
                     run {
                         try {

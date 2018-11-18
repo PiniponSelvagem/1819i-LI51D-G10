@@ -13,7 +13,6 @@ import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 
 class TeamsViewModel : ViewModel() {
 
-    private lateinit var repository: Repository
     private val teamsLiveData = MutableLiveData<MutableList<Team>>()
     val teams: LiveData<MutableList<Team>> = teamsLiveData
 
@@ -27,7 +26,7 @@ class TeamsViewModel : ViewModel() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        repository.getTeams(headers, orgID,
+        Repository.getTeams(headers, orgID,
                 resp = { str ->
                     run {
                         try {

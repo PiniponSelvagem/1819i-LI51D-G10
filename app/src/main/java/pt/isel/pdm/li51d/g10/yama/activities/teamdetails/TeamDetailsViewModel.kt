@@ -13,7 +13,6 @@ import pt.isel.pdm.li51d.g10.yama.data.dto.User
 
 class TeamDetailsViewModel : ViewModel() {
 
-    private lateinit var repository: Repository
     private val teamUsersLiveData = MutableLiveData<MutableList<User>>()
     val teamUsers: LiveData<MutableList<User>> = teamUsersLiveData
 
@@ -27,7 +26,7 @@ class TeamDetailsViewModel : ViewModel() {
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
-        repository.getTeamMembers(headers, teamID,
+        Repository.getTeamMembers(headers, teamID,
                 resp = { str ->
                     run {
                         try {
@@ -53,7 +52,7 @@ class TeamDetailsViewModel : ViewModel() {
         for (i in 0 until jArray.length()) {
             jObj = jArray[i] as JSONObject
 
-            repository.getTeamData(jObj.getString("url"), headers,
+            Repository.getTeamData(jObj.getString("url"), headers,
                     resp = { str ->
                         run {
                             try {
@@ -89,7 +88,7 @@ class TeamDetailsViewModel : ViewModel() {
                 jObj.getString("bio")
         )
 
-        repository.getUserImage(jObj.getString("avatar_url"), width, height,
+        Repository.getUserImage(jObj.getString("avatar_url"), width, height,
                 resp = { bitmap ->
                     run {
                         user.avatar = bitmap

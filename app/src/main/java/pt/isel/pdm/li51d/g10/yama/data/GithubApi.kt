@@ -2,7 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.data
 
 import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 
-class GithubApi {
+object GithubApi {
 
     fun getUser(headers: MutableMap<String, String>,
                 resp: (String) -> Unit, err: (Exception) -> Unit) {
