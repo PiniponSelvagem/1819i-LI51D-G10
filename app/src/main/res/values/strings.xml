@@ -6,7 +6,7 @@
     <string name="team_details">Team Details</string>
 
     <string name="login_button">Login</string>
-    <string name="github_token_hint">GitHub token</string>
+    <string name="hint_github_token">GitHub token</string>
     <string name="github_org_hint">Organization ID</string>
 
     <string name="followers">followers</string>
@@ -17,4 +17,6 @@
     <string name="bio">bio</string>
 
     <string name="save_credentials_checkbox">Remember my credentials</string>
+    <string name="hint_chat_message">Type a message…</string>
+    <string name="send">Send</string>
 </resources>
