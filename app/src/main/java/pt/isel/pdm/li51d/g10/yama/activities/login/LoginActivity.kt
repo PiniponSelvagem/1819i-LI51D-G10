@@ -4,6 +4,7 @@ import android.arch.lifecycle.*
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import kotlinx.android.synthetic.main.activity_login.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teams.TeamsActivity
@@ -45,13 +46,15 @@ class LoginActivity : AppCompatActivity() {
     private fun disableInteraction() {
         login_token.isEnabled = false
         login_orgID.isEnabled = false
-        login_button.isEnabled = false
+        login_button.visibility = View.INVISIBLE
+        login_progressBar.visibility = View.VISIBLE
     }
 
     private fun enableInteraction() {
         login_token.isEnabled = true
         login_orgID.isEnabled = true
-        login_button.isEnabled = true
+        login_button.visibility = View.VISIBLE
+        login_progressBar.visibility = View.INVISIBLE
     }
 
 

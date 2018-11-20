@@ -31,14 +31,16 @@ class TeamDetailsActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(TeamDetailsViewModel::class.java)
         viewModel.teamUsers.observe(this, Observer<MutableList<User>> {})
 
-        //TODO: user_avatar.maxWidth, user_avatar.maxHeight,
-        //hardcoded for now, since user_avatar is coming null
-        viewModel.loadTeamMembers(team.id, 500, 500,
-                success = {
-                    viewAdapter.notifyDataSetChanged()
-                },
-                fail = { e -> showHttpErrorToast(this, e) }
-        )
+        if (viewModel.isRefreshed.value == false) {
+            //TODO: user_avatar.maxWidth, user_avatar.maxHeight,
+            //hardcoded for now, since user_avatar is coming null
+            viewModel.loadTeamMembers(team.id, 500, 500,
+                    success = {
+                        viewAdapter.notifyDataSetChanged()
+                    },
+                    fail = { e -> showHttpErrorToast(this, e) }
+            )
+        }
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamAdapter(viewModel.teamUsers.value!!)

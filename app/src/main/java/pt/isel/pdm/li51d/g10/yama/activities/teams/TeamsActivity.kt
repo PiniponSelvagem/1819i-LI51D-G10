@@ -31,13 +31,15 @@ class TeamsActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(TeamsViewModel::class.java)
         viewModel.teams.observe(this, Observer<MutableList<Team>> {})
 
-        viewModel.loadTeams(
-                success = {
-                    viewAdapter.notifyDataSetChanged()
-                    Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show() //TODO: just temporary
-                },
-                fail = { e -> showHttpErrorToast(this, e) }
-        )
+        if (viewModel.isRefreshed.value == false) {
+            viewModel.loadTeams(
+                    success = {
+                        viewAdapter.notifyDataSetChanged()
+                        Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show() //TODO: just temporary
+                    },
+                    fail = { e -> showHttpErrorToast(this, e) }
+            )
+        }
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamsAdapter(viewModel.teams.value!!)

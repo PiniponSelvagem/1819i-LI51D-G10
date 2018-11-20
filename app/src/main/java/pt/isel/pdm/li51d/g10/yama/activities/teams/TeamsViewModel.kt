@@ -16,8 +16,18 @@ class TeamsViewModel : ViewModel() {
     private val teamsLiveData = MutableLiveData<MutableList<Team>>()
     val teams: LiveData<MutableList<Team>> = teamsLiveData
 
+    private val isRefreshedLiveData = MutableLiveData<Boolean>()
+    val isRefreshed = isRefreshedLiveData
+
     init {
         teamsLiveData.value = mutableListOf()
+        isRefreshedLiveData.value = false
+    }
+
+    //TODO: WIP refresh by user request
+    fun refresh(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+        isRefreshedLiveData.value = false
+        loadTeams(success, fail)
     }
 
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
@@ -32,6 +42,7 @@ class TeamsViewModel : ViewModel() {
                         try {
                             teamsData(str)
                             success.invoke(Unit)
+                            isRefreshedLiveData.value = true
                         } catch (e: JSONException) {
                             e.printStackTrace() //TODO: do logging
                         }
