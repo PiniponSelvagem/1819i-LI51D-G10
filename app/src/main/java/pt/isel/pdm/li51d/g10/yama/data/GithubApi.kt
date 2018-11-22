@@ -4,9 +4,11 @@ import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 
 object GithubApi {
 
+    private const val baseUrl = "https://api.github.com"
+
     fun getUser(headers: MutableMap<String, String>,
                 resp: (String) -> Unit, err: (Exception) -> Unit) {
-        HttpRequests.getString("https://api.github.com/user",
+        HttpRequests.getString("$baseUrl/user",
                 headers,
                 resp,
                 err
@@ -15,7 +17,7 @@ object GithubApi {
 
     fun getTeams(headers: MutableMap<String, String>, orgID: String,
                  resp: (String) -> Unit, err: (Exception) -> Unit) {
-        HttpRequests.getString("https://api.github.com/orgs/$orgID/teams",
+        HttpRequests.getString("$baseUrl/orgs/$orgID/teams",
                 headers,
                 resp,
                 err
@@ -24,7 +26,7 @@ object GithubApi {
 
     fun getTeamMembers(headers: MutableMap<String, String>, teamID: Int,
                  resp: (String) -> Unit, err: (Exception) -> Unit) {
-        HttpRequests.getString("https://api.github.com/teams/$teamID/members",
+        HttpRequests.getString("$baseUrl/teams/$teamID/members",
                 headers,
                 resp,
                 err

@@ -5,7 +5,7 @@
     <color name="colorAccent">#00AEFF</color>
     <color name="colorPressed">#FFFFFF</color>
     <!--<color name="colorPressed">#ffa200</color>-->
-    <color name="black">#000000</color>
+    <color name="background">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="darker_gray">#FF202020</color>
 </resources>

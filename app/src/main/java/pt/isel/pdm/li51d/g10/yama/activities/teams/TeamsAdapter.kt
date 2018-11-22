@@ -1,4 +1,4 @@
-package pt.isel.pdm.li51d.g10.yama.activities.teams.adapters
+package pt.isel.pdm.li51d.g10.yama.activities.teams
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView

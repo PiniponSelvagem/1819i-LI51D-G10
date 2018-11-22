@@ -1,4 +1,4 @@
-package pt.isel.pdm.li51d.g10.yama.activities.teamdetails.adapters
+package pt.isel.pdm.li51d.g10.yama.activities.teamdetails
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

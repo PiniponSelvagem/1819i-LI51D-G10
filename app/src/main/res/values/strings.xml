@@ -19,4 +19,6 @@
     <string name="save_credentials_checkbox">Remember my credentials</string>
     <string name="hint_chat_message">Type a message…</string>
     <string name="send">Send</string>
+    <string name="nickname">nickname</string>
+    <string name="name">name</string>
 </resources>

@@ -14,6 +14,8 @@ import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 
 class LoginActivity : AppCompatActivity() {
 
+    private var isConnecting: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -21,6 +23,12 @@ class LoginActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         viewModel.userLogged.observe(this, Observer<User> {})
+
+        if(savedInstanceState != null)
+            isConnecting = savedInstanceState.getBoolean("is_connecting")
+
+        if (isConnecting)
+            disableInteraction()
 
         login_button.setOnClickListener {
             saveCredentials()
@@ -43,7 +51,14 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @Override
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("is_connecting", isConnecting)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun disableInteraction() {
+        isConnecting = true
         login_token.isEnabled = false
         login_orgID.isEnabled = false
         login_button.visibility = View.INVISIBLE
@@ -51,6 +66,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun enableInteraction() {
+        isConnecting = false
         login_token.isEnabled = true
         login_orgID.isEnabled = true
         login_button.visibility = View.VISIBLE
