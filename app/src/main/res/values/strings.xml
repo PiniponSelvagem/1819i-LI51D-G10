@@ -9,6 +9,8 @@
     <string name="hint_github_token">GitHub token</string>
     <string name="github_org_hint">Organization ID</string>
 
+    <string name="nickname">nickname</string>
+    <string name="name">name</string>
     <string name="followers">followers</string>
     <string name="following">following</string>
     <string name="email">email</string>
@@ -19,6 +21,4 @@
     <string name="save_credentials_checkbox">Remember my credentials</string>
     <string name="hint_chat_message">Type a message…</string>
     <string name="send">Send</string>
-    <string name="nickname">nickname</string>
-    <string name="name">name</string>
 </resources>
