@@ -4,9 +4,12 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.os.Bundle
+import android.view.View.*
+import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
+import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 
 class ChatActivity : AppCompatActivity() {
 
@@ -18,6 +21,12 @@ class ChatActivity : AppCompatActivity() {
 
         team = intent.getSerializableExtra("team") as Team
         title = team.name
+
+        chat_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                hideKeyboard(this, this.currentFocus)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

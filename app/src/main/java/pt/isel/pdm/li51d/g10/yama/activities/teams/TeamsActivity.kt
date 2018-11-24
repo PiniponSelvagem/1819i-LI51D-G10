@@ -1,20 +1,22 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teams
 
-import android.arch.lifecycle.Observer
+import android.app.ActionBar
+import android.app.Activity
+import android.app.Fragment
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_teams.*
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
-import android.support.v7.widget.DefaultItemAnimator
-import pt.isel.pdm.li51d.g10.yama.R.id.recyclerView
 
 
 
@@ -23,23 +25,22 @@ class TeamsActivity : AppCompatActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var layoutMgr: RecyclerView.LayoutManager
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_teams)
-
 
         //TODO: this loggerUser should go to the activity that will display user info
         val loggedUser = intent.getSerializableExtra("loggedUser") as User
 
 
         val viewModel = ViewModelProviders.of(this).get(TeamsViewModel::class.java)
-        viewModel.teams.observe(this, Observer<MutableList<Team>> {})
+        //viewModel.teams.observe(this, Observer<MutableList<Team>> {})
 
         if (viewModel.isRefreshed.value == false) {
             viewModel.loadTeams(
                     success = {
-                        viewAdapter.notifyDataSetChanged() //TODO: maybe only notify for the item that changed
-                        Toast.makeText(this, "TEAMS UPDATED", Toast.LENGTH_LONG).show() //TODO: just temporary
+                        viewAdapter.notifyDataSetChanged()
                     },
                     fail = { e -> showHttpErrorToast(this, e) }
             )

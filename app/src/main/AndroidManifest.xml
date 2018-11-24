@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.userdetails.UserDetailsActivity" />
+        <activity android:name=".activities.loggeduser.OLD_UserDetailsActivity" />
         <activity
             android:name=".activities.teams.TeamsActivity"
             android:label="@string/title_activity_teams" />

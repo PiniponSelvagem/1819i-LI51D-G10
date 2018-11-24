@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    tools:context=".activities.login.LoginActivity">
+    tools:context=".activities.login.LoginActivity"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:id="@+id/login_root">
 
     <ImageView
         android:id="@+id/imageView"
@@ -29,21 +33,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView">
 
-        <EditText
-            android:id="@+id/login_orgID"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/github_org_hint"
-            android:inputType="textPersonName" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/login_token"
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/login_orgID"
+                android:inputType="textPersonName"
+                android:imeOptions="actionNext"
+                android:hint="@string/github_org_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/hint_github_token"
-            android:inputType="textPassword" />
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/login_token"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:hint="@string/hint_github_token"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/login_button"

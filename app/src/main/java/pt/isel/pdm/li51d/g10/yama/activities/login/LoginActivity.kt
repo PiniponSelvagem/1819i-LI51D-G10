@@ -5,12 +5,15 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_login.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teams.TeamsActivity
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
-import pt.isel.pdm.li51d.g10.yama.data.dto.User
+import android.view.View.OnFocusChangeListener
+import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -22,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
         checkSharedPreferences()
 
         val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        viewModel.userLogged.observe(this, Observer<User> {})
+        //viewModel.userLogged.observe(this, Observer<User> {})
 
         if(savedInstanceState != null)
             isConnecting = savedInstanceState.getBoolean("is_connecting")
@@ -49,6 +52,12 @@ class LoginActivity : AppCompatActivity() {
                     }
             )
         }
+
+        login_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                hideKeyboard(this, this.currentFocus)
+            }
+        }
     }
 
     @Override
@@ -59,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun disableInteraction() {
         isConnecting = true
+        login_root.requestFocus()
         login_token.isEnabled = false
         login_orgID.isEnabled = false
         login_button.visibility = View.INVISIBLE
@@ -75,12 +85,18 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun checkSharedPreferences() {
-        login_orgID.setText(Preferences.get(R.string.spKey__login_orgID.toString()))
-        login_token.setText(Preferences.get(R.string.spKey__login_token.toString()))
+        val orgID = login_orgID as EditText
+        orgID.setText(Preferences.get(R.string.spKey__login_orgID.toString()))
+
+        val token = login_token as EditText
+        token.setText(Preferences.get(R.string.spKey__login_token.toString()))
     }
 
     private fun saveCredentials() {
-        Preferences.set(R.string.spKey__login_orgID.toString(), login_orgID.text.toString())
-        Preferences.set(R.string.spKey__login_token.toString(), login_token.text.toString())
+        val orgID = login_orgID as EditText
+        Preferences.set(R.string.spKey__login_orgID.toString(), orgID.text.toString())
+
+        val token = login_token as EditText
+        Preferences.set(R.string.spKey__login_token.toString(), token.text.toString())
     }
 }

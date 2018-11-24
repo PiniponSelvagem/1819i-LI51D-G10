@@ -1,8 +1,8 @@
-package pt.isel.pdm.li51d.g10.yama.activities.userdetails
+package pt.isel.pdm.li51d.g10.yama.activities.loggeduser
 
 import android.support.v7.app.AppCompatActivity
 
-class UserDetailsActivity : AppCompatActivity() {
+class OLD_UserDetailsActivity : AppCompatActivity() {
 
     /*
     override fun onCreate(savedInstanceState: Bundle?) {
