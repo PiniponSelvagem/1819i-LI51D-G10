@@ -23,9 +23,9 @@ object Preferences {
     fun get(key: String): String = preferences.getString(key, "")
 
     @SuppressLint("ApplySharedPref")
-    fun remove(key: String, value: String) {
+    fun remove(key: String) {
         with(preferences.edit()) {
-            remove(key, value)
+            remove(key)
             commit()
         }
     }

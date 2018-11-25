@@ -32,19 +32,6 @@
     </android.support.design.widget.CoordinatorLayout>
 
 
-
-    <!-- Drawer -->
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/darker_gray"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/drawer_header_teams"
-        app:menu="@menu/activity_teams_drawer" />
-
-
     <!-- Activity Layout -->
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -58,5 +45,17 @@
             android:scrollbars="vertical" />
 
     </android.support.constraint.ConstraintLayout>
+
+
+    <!-- Drawer -->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/darker_gray"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header_teams"
+        app:menu="@menu/activity_teams_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

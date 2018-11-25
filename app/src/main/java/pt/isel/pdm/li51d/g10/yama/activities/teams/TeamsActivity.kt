@@ -1,6 +1,7 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teams
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -20,6 +21,8 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.widget.Toast
 import kotlinx.android.synthetic.main.drawer_header_teams.view.*
+import pt.isel.pdm.li51d.g10.yama.activities.login.LoginActivity
+import pt.isel.pdm.li51d.g10.yama.data.Preferences
 
 
 class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -42,8 +45,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         toggle = ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer.setDrawerListener(toggle)
-        toggle.syncState()
+        drawer.addDrawerListener(toggle)
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
@@ -80,8 +82,6 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             )
         }
 
-
-
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = TeamsAdapter(viewModel.teams.value!!)
 
@@ -112,12 +112,13 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item1 -> Toast.makeText(this, "Clicked item camera", Toast.LENGTH_SHORT).show()
-            R.id.item2 -> Toast.makeText(this,   "Clicked item share", Toast.LENGTH_SHORT).show()
-            R.id.item3 -> Toast.makeText(this, "Clicked item send", Toast.LENGTH_SHORT).show()
+            R.id.item1 -> Toast.makeText(this, "Clicked item one", Toast.LENGTH_SHORT).show()
+            R.id.item2 -> Toast.makeText(this, "Clicked item two", Toast.LENGTH_SHORT).show()
+            R.id.item3 -> Toast.makeText(this, "Clicked item three", Toast.LENGTH_SHORT).show()
+            R.id.item4 -> Toast.makeText(this, "Clicked item four", Toast.LENGTH_SHORT).show()
         }
         drawer.closeDrawer(GravityCompat.START)
-        return false
+        return true
     }
 
     override fun onBackPressed() {
