@@ -7,6 +7,6 @@
     <!--<color name="colorPressed">#ffa200</color>-->
     <color name="background">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="darker_gray">#FF202020</color>
+    <color name="darker_gray">#202020</color>
 </resources>
 

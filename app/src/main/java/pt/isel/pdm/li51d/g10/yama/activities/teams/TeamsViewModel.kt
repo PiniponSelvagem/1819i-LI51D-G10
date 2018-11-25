@@ -3,6 +3,7 @@ package pt.isel.pdm.li51d.g10.yama.activities.teams
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.graphics.Bitmap
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -28,6 +29,10 @@ class TeamsViewModel : ViewModel() {
     fun refresh(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         isRefreshedLiveData.value = false
         loadTeams(success, fail)
+    }
+
+    fun loadLoggedUserAvatar(avatarUrl: String, success: (Bitmap) -> Unit, fail: (Exception) -> Unit) {
+        Repository.getUserImage(avatarUrl, 250, 250, emptyMap(), success, fail)
     }
 
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {

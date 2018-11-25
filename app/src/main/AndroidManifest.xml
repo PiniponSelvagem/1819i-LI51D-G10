@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.loggeduser.OLD_UserDetailsActivity" />
         <activity
+            android:theme="@style/AppTheme_NoActionBar_ColoredStatusBar"
             android:name=".activities.teams.TeamsActivity"
             android:label="@string/title_activity_teams" />
         <activity android:name=".activities.chat.ChatActivity" />
