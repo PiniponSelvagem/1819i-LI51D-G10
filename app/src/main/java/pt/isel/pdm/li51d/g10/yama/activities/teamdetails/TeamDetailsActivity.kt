@@ -1,6 +1,5 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teamdetails
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_details.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
-import pt.isel.pdm.li51d.g10.yama.data.dto.User
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 
 

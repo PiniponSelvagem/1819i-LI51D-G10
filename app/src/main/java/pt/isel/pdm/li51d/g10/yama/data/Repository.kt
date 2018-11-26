@@ -32,4 +32,9 @@ object Repository {
                 headers, resp, err)
     }
 
+    fun getUserTeams(headers: MutableMap<String, String>,
+                resp: (String) -> Unit, err: (Exception) -> Unit){
+        GithubApi.getUserTeams(headers, resp, err)
+    }
+
 }

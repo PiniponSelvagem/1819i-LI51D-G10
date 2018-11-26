@@ -17,22 +17,58 @@ class TeamsViewModel : ViewModel() {
     private val teamsLiveData = MutableLiveData<MutableList<Team>>()
     val teams: LiveData<MutableList<Team>> = teamsLiveData
 
-    private val isRefreshedLiveData = MutableLiveData<Boolean>()
-    val isRefreshed = isRefreshedLiveData
+    private val loggedUserTeamsLiveData = MutableLiveData<MutableList<Team>>()
+    val loggedUserTeams: LiveData<MutableList<Team>> = loggedUserTeamsLiveData
+
+    private val isTeamsRefreshedLiveData = MutableLiveData<Boolean>()
+    val isTeamsRefreshed = isTeamsRefreshedLiveData
+
+    private val isLoggedUserRefreshedLiveData = MutableLiveData<Boolean>()
+    val isLoggedUserRefreshed = isTeamsRefreshedLiveData
+
 
     init {
         teamsLiveData.value = mutableListOf()
-        isRefreshedLiveData.value = false
+        loggedUserTeamsLiveData.value = mutableListOf()
+        isTeamsRefreshedLiveData.value = false
+        isLoggedUserRefreshedLiveData.value = false
     }
+
 
     //TODO: WIP refresh by user request
     fun refresh(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        isRefreshedLiveData.value = false
+        isTeamsRefreshedLiveData.value = false
+        isLoggedUserRefreshedLiveData.value = false
         loadTeams(success, fail)
     }
 
     fun loadLoggedUserAvatar(avatarUrl: String, success: (Bitmap) -> Unit, fail: (Exception) -> Unit) {
-        Repository.getUserImage(avatarUrl, 250, 250, emptyMap(), success, fail)
+        Repository.getUserImage(avatarUrl, 250, 250, emptyMap(),
+                resp = success.also { isLoggedUserRefreshedLiveData.value = true },
+                err  = fail
+        )
+    }
+
+    fun loadLoggedUserTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+        val token = Preferences.get(R.string.spKey__login_token.toString())
+        val orgID = Preferences.get(R.string.spKey__login_orgID.toString())
+        val headers = mutableMapOf<String, String>()
+        headers["Authorization"] = "token $token"
+
+        Repository.getUserTeams(headers,
+                resp = { str ->
+                    run {
+                        try {
+                            loggedUserTeamsData(str, orgID)
+                            success.invoke(Unit)
+                            isTeamsRefreshedLiveData.value = true
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: do logging
+                        }
+                    }
+                },
+                err = { e -> fail.invoke(e) }
+        )
     }
 
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
@@ -47,7 +83,7 @@ class TeamsViewModel : ViewModel() {
                         try {
                             teamsData(str)
                             success.invoke(Unit)
-                            isRefreshedLiveData.value = true
+                            isTeamsRefreshedLiveData.value = true
                         } catch (e: JSONException) {
                             e.printStackTrace() //TODO: do logging
                         }
@@ -55,6 +91,21 @@ class TeamsViewModel : ViewModel() {
                 },
                 err = { e -> fail.invoke(e) }
         )
+    }
+
+
+
+    private fun loggedUserTeamsData(response: String, orgID: String) {
+        val jArray = JSONArray(response)
+        var jObj: JSONObject
+
+        for (i in 0 until jArray.length()) {
+            jObj = jArray[i] as JSONObject
+            val jObjInner = jObj.getJSONObject("organization")
+            if (jObjInner.getString("login") == orgID) {
+                loggedUserTeamsLiveData.value!!.add(Team(jObj.getString("name"), jObj.getInt("id")))
+            }
+        }
     }
 
     private fun teamsData(response: String) {

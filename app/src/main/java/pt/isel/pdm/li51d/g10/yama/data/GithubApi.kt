@@ -15,6 +15,15 @@ object GithubApi {
         )
     }
 
+    fun getUserTeams(headers: MutableMap<String, String>,
+                resp: (String) -> Unit, err: (Exception) -> Unit) {
+        HttpRequests.getString("$baseUrl/user/teams",
+                headers,
+                resp,
+                err
+        )
+    }
+
     fun getTeams(headers: MutableMap<String, String>, orgID: String,
                  resp: (String) -> Unit, err: (Exception) -> Unit) {
         HttpRequests.getString("$baseUrl/orgs/$orgID/teams",

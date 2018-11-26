@@ -26,4 +26,6 @@
     <string name="send">Send</string>
 
     <string name="log_out">Log out</string>
+    <string name="log_out_dialog_msg">Are you sure you want to log out?</string>
+    <string name="my_teams">My teams</string>
 </resources>

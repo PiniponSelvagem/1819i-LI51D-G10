@@ -16,7 +16,7 @@ class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<T
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val teamName = itemView.findViewById<TextView>(R.id.team_name)
-        val teamId = itemView.findViewById<TextView>(R.id.team_id)
+        val teamId   = itemView.findViewById<TextView>(R.id.team_id)
 
         fun bindItems(team: Team) {
             teamName.text = team.name
