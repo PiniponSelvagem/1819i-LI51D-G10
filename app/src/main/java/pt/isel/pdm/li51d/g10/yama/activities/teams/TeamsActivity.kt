@@ -57,8 +57,11 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val headerView = navigationView.getHeaderView(0)
         headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
-        headerView.user_nickname_drawer.text = loggedUser.nickname
-        headerView.user_name_drawer.text = loggedUser.name
+        headerView.user_followers_drawer.text = loggedUser.followers.toString()
+        headerView.user_following_drawer.text = loggedUser.following.toString()
+        headerView.user_nickname_drawer.text  = loggedUser.nickname
+        headerView.user_name_drawer.text      = loggedUser.name
+        headerView.user_email_drawer.text     = loggedUser.email
 
 
         viewModel = ViewModelProviders.of(this).get(TeamsViewModel::class.java)
