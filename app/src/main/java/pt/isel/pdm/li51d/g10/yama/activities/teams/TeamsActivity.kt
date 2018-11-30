@@ -35,7 +35,6 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private lateinit var drawer: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
-    private lateinit var loggedUser: User
     private lateinit var viewModel: TeamsViewModel
 
 
@@ -52,27 +51,20 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
-
-        loggedUser = intent.getSerializableExtra("loggedUser") as User
-
         val headerView = navigationView.getHeaderView(0)
-        headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
-        headerView.user_followers_drawer.text = loggedUser.followers.toString()
-        headerView.user_following_drawer.text = loggedUser.following.toString()
-        headerView.user_nickname_drawer.text  = loggedUser.nickname
-        headerView.user_name_drawer.text      = loggedUser.name
-        headerView.user_email_drawer.text     = loggedUser.email
-
 
         viewModel = ViewModelProviders.of(this).get(TeamsViewModel::class.java)
+        viewModel.setLoggedUser(intent.getSerializableExtra("loggedUser") as User)
         //viewModel.teams.observe(this, Observer<MutableList<Team>> {})
 
+        drawerLoggedUser(headerView, viewModel.loggedUser.value!!)
+
         if (viewModel.isLoggedUserRefreshed.value == false) {
-            viewModel.loadLoggedUserAvatar(loggedUser.avatarUrl,
+            viewModel.loadLoggedUserAvatar(viewModel.loggedUser.value!!.avatarUrl,
                     success = { bitmap ->
-                        loggedUser.avatar = bitmap
+                        viewModel.loggedUser.value?.avatar = bitmap
                         run {
-                            headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
+                            headerView.user_avatar_drawer.setImageBitmap(viewModel.loggedUser.value?.avatar)
                         }
                     },
                     fail = { e -> showHttpErrorToast(this, e) }
@@ -84,7 +76,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             )
         }
         else {
-            drawerMyTeams(navigationView)
+            drawerMyTeams(navigationView) //populate drawer with previously loaded data
         }
 
         if (viewModel.isTeamsRefreshed.value == false) {
@@ -105,6 +97,16 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         teams_recycler_view.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
     }
 
+
+    private fun drawerLoggedUser(headerView: View, loggedUser: User) {
+        headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
+        headerView.user_followers_drawer.text = loggedUser.followers.toString()
+        headerView.user_following_drawer.text = loggedUser.following.toString()
+        headerView.user_nickname_drawer.text  = loggedUser.nickname
+        headerView.user_name_drawer.text      = loggedUser.name
+        if (false && loggedUser.email != "null") headerView.user_email_drawer.text = loggedUser.email
+        else headerView.user_email_drawer.visibility = View.GONE
+    }
 
     private fun drawerMyTeams(navigationView: NavigationView) {
         val myTeamsList = viewModel.loggedUserTeams.value as MutableList<Team>

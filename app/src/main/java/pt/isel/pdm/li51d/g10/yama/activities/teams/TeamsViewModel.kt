@@ -11,8 +11,12 @@ import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
+import pt.isel.pdm.li51d.g10.yama.data.dto.User
 
 class TeamsViewModel : ViewModel() {
+
+    private val loggedUserLiveData = MutableLiveData<User>()
+    val loggedUser: LiveData<User> = loggedUserLiveData
 
     private val teamsLiveData = MutableLiveData<MutableList<Team>>()
     val teams: LiveData<MutableList<Team>> = teamsLiveData
@@ -32,6 +36,10 @@ class TeamsViewModel : ViewModel() {
         loggedUserTeamsLiveData.value = mutableListOf()
         isTeamsRefreshedLiveData.value = false
         isLoggedUserRefreshedLiveData.value = false
+    }
+
+    fun setLoggedUser(user: User) {
+        loggedUserLiveData.value = user
     }
 
 
