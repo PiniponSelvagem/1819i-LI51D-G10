@@ -104,7 +104,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         headerView.user_following_drawer.text = loggedUser.following.toString()
         headerView.user_nickname_drawer.text  = loggedUser.nickname
         headerView.user_name_drawer.text      = loggedUser.name
-        if (false && loggedUser.email != "null") headerView.user_email_drawer.text = loggedUser.email
+        if (loggedUser.email != "null") headerView.user_email_drawer.text = loggedUser.email
         else headerView.user_email_drawer.visibility = View.GONE
     }
 
