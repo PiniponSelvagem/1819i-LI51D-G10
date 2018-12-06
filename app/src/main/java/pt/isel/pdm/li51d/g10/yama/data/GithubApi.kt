@@ -1,5 +1,6 @@
 package pt.isel.pdm.li51d.g10.yama.data
 
+import android.graphics.Bitmap
 import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 
 object GithubApi {
@@ -41,4 +42,25 @@ object GithubApi {
                 err
         )
     }
+
+    fun getTeamData(url: String, headers: MutableMap<String, String>,
+                 resp: (String) -> Unit, err: (Exception) -> Unit) {
+        HttpRequests.getString(url,
+                headers,
+                resp,
+                err
+        )
+    }
+
+    fun getUserImage(url: String, width: Int, height: Int, headers: Map<String, String> = mapOf(),
+                     resp: (Bitmap) -> Unit, err: (Exception) -> Unit) {
+        HttpRequests.getBitmap(url,
+                width,
+                height,
+                headers,
+                resp,
+                err
+        )
+    }
+
 }
