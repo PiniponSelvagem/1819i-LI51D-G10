@@ -7,7 +7,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
 
@@ -33,7 +32,7 @@ class TeamDetailsViewModel : ViewModel() {
 
     fun loadTeamMembers(teamID: Int, width: Int, height: Int,
                         success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        val token = Preferences.get(R.string.spKey__login_token.toString())
+        val token = Repository.getSharedPreference(R.string.spKey__login_token.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
@@ -55,7 +54,7 @@ class TeamDetailsViewModel : ViewModel() {
 
     private fun teamData(response: String, width: Int, height: Int,
                          success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        val token = Preferences.get(R.string.spKey__login_token.toString())
+        val token = Repository.getSharedPreference(R.string.spKey__login_token.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 

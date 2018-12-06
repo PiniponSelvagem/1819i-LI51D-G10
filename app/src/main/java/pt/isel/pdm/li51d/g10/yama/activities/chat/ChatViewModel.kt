@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.dto.Message
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
 

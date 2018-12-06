@@ -9,7 +9,6 @@ import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_login.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teams.TeamsActivity
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import android.view.View.OnFocusChangeListener
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
@@ -22,10 +21,11 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        checkSharedPreferences()
 
         val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         //viewModel.userLogged.observe(this, Observer<User> {})
+
+        viewModel.checkSharedPreferences(login_orgID as EditText, login_token as EditText)
 
         if(savedInstanceState != null)
             isConnecting = savedInstanceState.getBoolean("is_connecting")
@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
             disableInteraction()
 
         login_button.setOnClickListener {
-            saveCredentials()
+            viewModel.saveCredentials(login_orgID as EditText, login_token as EditText)
 
             disableInteraction()
             viewModel.loginUser(
@@ -81,22 +81,5 @@ class LoginActivity : AppCompatActivity() {
         login_orgID.isEnabled = true
         login_button.visibility = View.VISIBLE
         login_progressBar.visibility = View.INVISIBLE
-    }
-
-
-    private fun checkSharedPreferences() {
-        val orgID = login_orgID as EditText
-        orgID.setText(Preferences.get(R.string.spKey__login_orgID.toString()))
-
-        val token = login_token as EditText
-        token.setText(Preferences.get(R.string.spKey__login_token.toString()))
-    }
-
-    private fun saveCredentials() {
-        val orgID = login_orgID as EditText
-        Preferences.set(R.string.spKey__login_orgID.toString(), orgID.text.toString())
-
-        val token = login_token as EditText
-        Preferences.set(R.string.spKey__login_token.toString(), token.text.toString())
     }
 }

@@ -37,4 +37,16 @@ object Repository {
         GithubApi.getUserTeams(headers, resp, err)
     }
 
+    fun getSharedPreference(key: String) : String {
+        return Preferences.get(key)
+    }
+
+    fun setSharedPreference(key: String, value: String) {
+        Preferences.set(key, value)
+    }
+
+    fun removeSharedPreference(key: String) {
+        Preferences.remove(key)
+    }
+
 }

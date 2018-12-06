@@ -3,10 +3,10 @@ package pt.isel.pdm.li51d.g10.yama.activities.login
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.widget.EditText
 import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
 
@@ -16,8 +16,8 @@ class LoginViewModel : ViewModel() {
     val userLogged: LiveData<User> = userLiveData
 
     fun loginUser(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        val token = Preferences.get(R.string.spKey__login_token.toString())
-        val orgID = Preferences.get(R.string.spKey__login_orgID.toString())
+        val token = Repository.getSharedPreference(R.string.spKey__login_token.toString())
+        val orgID = Repository.getSharedPreference(R.string.spKey__login_orgID.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
@@ -53,5 +53,17 @@ class LoginViewModel : ViewModel() {
                 jObj.getString("blog"),
                 jObj.getString("bio")
         )
+    }
+
+    fun checkSharedPreferences(orgID: EditText, token: EditText) {
+        orgID.setText(Repository.getSharedPreference(R.string.spKey__login_orgID.toString()))
+
+        token.setText(Repository.getSharedPreference(R.string.spKey__login_token.toString()))
+    }
+
+    fun saveCredentials(orgID: EditText, token: EditText) {
+        Repository.setSharedPreference(R.string.spKey__login_orgID.toString(), orgID.text.toString())
+
+        Repository.setSharedPreference(R.string.spKey__login_token.toString(), token.text.toString())
     }
 }

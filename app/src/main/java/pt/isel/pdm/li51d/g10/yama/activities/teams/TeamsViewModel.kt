@@ -8,7 +8,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.data.dto.User
@@ -58,8 +57,8 @@ class TeamsViewModel : ViewModel() {
     }
 
     fun loadLoggedUserTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        val token = Preferences.get(R.string.spKey__login_token.toString())
-        val orgID = Preferences.get(R.string.spKey__login_orgID.toString())
+        val token = Repository.getSharedPreference(R.string.spKey__login_token.toString())
+        val orgID = Repository.getSharedPreference(R.string.spKey__login_orgID.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
@@ -80,8 +79,8 @@ class TeamsViewModel : ViewModel() {
     }
 
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        val token = Preferences.get(R.string.spKey__login_token.toString())
-        val orgID = Preferences.get(R.string.spKey__login_orgID.toString())
+        val token = Repository.getSharedPreference(R.string.spKey__login_token.toString())
+        val orgID = Repository.getSharedPreference(R.string.spKey__login_orgID.toString())
         val headers = mutableMapOf<String, String>()
         headers["Authorization"] = "token $token"
 
@@ -101,7 +100,9 @@ class TeamsViewModel : ViewModel() {
         )
     }
 
-
+    fun removeUserCredential(key: String) {
+        Repository.removeSharedPreference(key)
+    }
 
     private fun loggedUserTeamsData(response: String, orgID: String) {
         val jArray = JSONArray(response)
