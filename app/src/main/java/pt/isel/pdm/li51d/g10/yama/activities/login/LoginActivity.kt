@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teams.TeamsActivity
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
@@ -23,9 +22,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        checkSharedPreferences()
 
         viewModel = this.viewModel()
+        viewModel.checkCredentials(login_orgID, login_token)
 
         if(savedInstanceState != null)
             isConnecting = savedInstanceState.getBoolean("is_connecting")
@@ -34,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
             disableInteraction()
 
         login_button.setOnClickListener {
-            saveCredentials()
+            viewModel.saveCredentials(login_orgID.text.toString(), login_token.text.toString())
 
             disableInteraction()
             viewModel.loginUser(
@@ -79,22 +78,5 @@ class LoginActivity : AppCompatActivity() {
         login_orgID.isEnabled = true
         login_button.visibility = View.VISIBLE
         login_progressBar.visibility = View.INVISIBLE
-    }
-
-
-    private fun checkSharedPreferences() {
-        val orgID = login_orgID as EditText
-        orgID.setText(Preferences.get(R.string.spKey__login_orgID.toString()))
-
-        val token = login_token as EditText
-        token.setText(Preferences.get(R.string.spKey__login_token.toString()))
-    }
-
-    private fun saveCredentials() {
-        val orgID = login_orgID as EditText
-        Preferences.set(R.string.spKey__login_orgID.toString(), orgID.text.toString())
-
-        val token = login_token as EditText
-        Preferences.set(R.string.spKey__login_token.toString(), token.text.toString())
     }
 }

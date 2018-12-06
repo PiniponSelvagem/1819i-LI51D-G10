@@ -6,7 +6,7 @@ import pt.isel.pdm.li51d.g10.yama.utils.createTokenHeader
 
 object GithubApi {
 
-    private val token   = Preferences.get(R.string.spKey__login_token.toString())
+    private val token = Preferences.get(R.string.spKey__login_token.toString())
     val headers = mapOf("Authorization" to createTokenHeader(token))
 
     private const val baseUrl = "https://api.github.com"

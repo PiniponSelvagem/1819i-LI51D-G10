@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_teams.*
 import kotlinx.android.synthetic.main.drawer_header_teams.view.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.login.LoginActivity
-import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.user.User
 import pt.isel.pdm.li51d.g10.yama.utils.showDialogYesNo
@@ -155,8 +154,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 drawer.closeDrawer(GravityCompat.START)
                 showDialogYesNo(this, R.string.log_out, R.string.log_out_dialog_msg,
                         yes = {
-                            Preferences.remove(R.string.spKey__login_token.toString())
-                            Preferences.remove(R.string.spKey__login_orgID.toString())
+                            viewModel.removeCredentials()
                             startActivity(Intent(this, LoginActivity::class.java))
                             finish()
                         },

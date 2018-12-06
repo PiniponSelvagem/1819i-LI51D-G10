@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.user.User
@@ -16,6 +17,11 @@ class TeamsViewModel(private val repository: Repository) : ViewModel() {
 
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         repository.loadTeams(success, fail)
+    }
+
+    fun removeCredentials() {
+        repository.removeSharedPreference(R.string.spKey__login_token.toString())
+        repository.removeSharedPreference(R.string.spKey__login_orgID.toString())
     }
 
 

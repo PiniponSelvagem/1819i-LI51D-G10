@@ -3,7 +3,6 @@ package pt.isel.pdm.li51d.g10.yama.data
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.AsyncTask
-import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -28,7 +27,7 @@ class Repository(private val db: YamaDatabase) {
                         run {
                             try {
                                 val jObj = JSONObject(str)
-                                Preferences.set(R.string.spKey__logged_id.toString(), jObj.getString("id"))
+                                setSharedPreference(R.string.spKey__logged_id.toString(), jObj.getString("id"))
                                 db.insertLoggedUser(convertJsonToUser(jObj))
                                 success.invoke(Unit)
                             } catch (e: JSONException) {
@@ -47,7 +46,7 @@ class Repository(private val db: YamaDatabase) {
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         if (allTeams.value==null) {
             GithubApi.getTeams(
-                    Preferences.get(R.string.spKey__login_orgID.toString()),
+                    getSharedPreference(R.string.spKey__login_orgID.toString()),
                     resp = { str ->
                         run {
                             try {
@@ -136,6 +135,7 @@ class Repository(private val db: YamaDatabase) {
         GithubApi.getLoggedUser(resp, err)
     }
 
+    //TODO: maybe place in AvatarAPI
     fun getUserImage(url: String, width: Int, height: Int, headers: Map<String, String> = mapOf(),
                      resp: (Bitmap) -> Unit, err: (Exception) -> Unit){
         HttpRequests.getBitmap(url,
@@ -146,6 +146,18 @@ class Repository(private val db: YamaDatabase) {
     //TODO: part of the WIP for the navigation drawer to show "My teams"
     fun getUserTeams(resp: (String) -> Unit, err: (Exception) -> Unit){
         GithubApi.getUserTeams(resp, err)
+    }
+
+    fun getSharedPreference(key: String) : String {
+        return Preferences.get(key)
+    }
+
+    fun setSharedPreference(key: String, value: String) {
+        Preferences.set(key, value)
+    }
+
+    fun removeSharedPreference(key: String) {
+        Preferences.remove(key)
     }
 
 }
