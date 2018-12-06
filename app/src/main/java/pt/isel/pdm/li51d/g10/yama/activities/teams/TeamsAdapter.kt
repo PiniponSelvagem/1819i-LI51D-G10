@@ -1,16 +1,19 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teams
 
 import android.content.Intent
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.chat.ChatActivity
-import pt.isel.pdm.li51d.g10.yama.data.dto.Team
+import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 
-class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<TeamsAdapter.ItemViewHolder>() {
+class TeamsAdapter constructor(owner: LifecycleOwner, val data: LiveData<MutableList<Team>>) : RecyclerView.Adapter<TeamsAdapter.ItemViewHolder>() {
 
     private val TAG = TeamsAdapter::class.java.simpleName
 
@@ -30,6 +33,12 @@ class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<T
         }
     }
 
+    init {
+        data.observe(owner, Observer {
+            this.notifyDataSetChanged()
+        })
+    }
+
     /**
      * Create new views (invoked by the layout manager)
      */
@@ -46,12 +55,16 @@ class TeamsAdapter(private val data: MutableList<Team>) : RecyclerView.Adapter<T
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-
-        holder.bindItems(data[position])
+        val current = data.value!![position]
+        holder.bindItems(current)
     }
 
     /**
      * Return the size of your dataset (invoked by the layout manager)
      */
-    override fun getItemCount(): Int = data.size
+    // getItemCount() is called many times, and when it is first called,
+    // words has not been updated (means initially, it's null, and we can't return null).
+    override fun getItemCount(): Int {
+        return data.value?.size ?: 0
+    }
 }

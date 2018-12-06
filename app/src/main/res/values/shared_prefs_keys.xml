@@ -2,4 +2,5 @@
 <resources>
     <string name="spKey__login_orgID">loginOrgID</string>
     <string name="spKey__login_token">loginToken</string>
+    <string name="spKey__logged_id">loggedId</string>
 </resources>

@@ -1,17 +1,23 @@
 package pt.isel.pdm.li51d.g10.yama.activities.chat
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
-import android.view.*
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.View.*
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.dto.Team
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
+import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.dto.Message
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 
@@ -21,12 +27,19 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var layoutMgr: RecyclerView.LayoutManager
     private lateinit var team: Team
 
+    val billboardDocument: DocumentReference = FirebaseFirestore.getInstance().collection("billboard").document("message")
+    private val BILLBOARD_MESSAGE = "MESSAGE"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
         team = intent.getSerializableExtra("team") as Team
         title = team.name
+
+        billboardDocument.addSnapshotListener(this) { documentSnapshot, firebaseFirestoreException ->
+            updateBillboardMessage(documentSnapshot)
+        }
 
         chat_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -41,6 +54,9 @@ class ChatActivity : AppCompatActivity() {
 
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
+
+                saveBillboardMessage(set_message.text.toString())
+
                 viewModel.addMessage(Message(set_message.text.toString(), true))
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
@@ -79,5 +95,31 @@ class ChatActivity : AppCompatActivity() {
         val i = Intent(this, TeamDetailsActivity::class.java)
         i.putExtra("team", team)
         startActivity(i)
+    }
+
+
+    fun saveBillboardMessage(msg: String) {
+        val message = mapOf(
+                BILLBOARD_MESSAGE to msg
+        )
+
+        billboardDocument.set(message).addOnSuccessListener {
+            Log.i("THIS", "New billboard document has been saved")
+        }.addOnFailureListener {
+            Log.w("THIS", "New billboard document NOT saved", it)
+        }
+    }
+
+    fun fetchBillboardMessage(view: View) {
+        billboardDocument.get().addOnSuccessListener {
+            updateBillboardMessage(it)
+        }.addOnFailureListener {
+            Log.w("THIS", "New billboard document NOT saved", it)
+        }
+    }
+
+    private fun updateBillboardMessage(documentSnapshot: DocumentSnapshot?) {
+        if (documentSnapshot != null && documentSnapshot.exists())
+            println(documentSnapshot.getString(BILLBOARD_MESSAGE))
     }
 }

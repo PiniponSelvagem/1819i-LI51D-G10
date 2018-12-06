@@ -1,31 +1,30 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teams
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
-import android.support.design.widget.NavigationView
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_teams.*
-import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.dto.User
-import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.Toolbar
 import kotlinx.android.synthetic.main.drawer_header_teams.view.*
-import pt.isel.pdm.li51d.g10.yama.activities.chat.ChatActivity
+import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.login.LoginActivity
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
-import pt.isel.pdm.li51d.g10.yama.data.dto.Team
+import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
+import pt.isel.pdm.li51d.g10.yama.data.database.user.User
 import pt.isel.pdm.li51d.g10.yama.utils.showDialogYesNo
-
+import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
+import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
 class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -51,43 +50,53 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+
         val headerView = navigationView.getHeaderView(0)
 
-        viewModel = ViewModelProviders.of(this).get(TeamsViewModel::class.java)
-        viewModel.setLoggedUser(intent.getSerializableExtra("loggedUser") as User)
-        //viewModel.teams.observe(this, Observer<MutableList<Team>> {})
+        viewModel = this.viewModel()
 
-        drawerLoggedUser(headerView, viewModel.loggedUser.value!!)
+        viewModel.loggedUser.observe(this, Observer<User> {
+            user -> drawerLoggedUser(headerView, user)
+        })
 
-        if (viewModel.isLoggedUserRefreshed.value == false) {
-            viewModel.loadLoggedUserAvatar(viewModel.loggedUser.value!!.avatarUrl,
-                    success = { bitmap ->
-                        viewModel.loggedUser.value?.avatar = bitmap
-                        run {
-                            headerView.user_avatar_drawer.setImageBitmap(viewModel.loggedUser.value?.avatar)
-                        }
-                    },
-                    fail = { e -> showHttpErrorToast(this, e) }
-            )
+        //TODO: feature WIP (navigation drawer show teams the logged user is in)
+        //NOTE: atm is being given an emptyList() so it knows that it needs to hide "My teams" section
+        drawerMyTeams(navigationView, emptyList())
 
-            viewModel.loadLoggedUserTeams(
-                    success = { drawerMyTeams(navigationView) },
-                    fail    = { e -> showHttpErrorToast(this, e) }
-            )
-        }
-        else {
-            drawerMyTeams(navigationView) //populate drawer with previously loaded data
-        }
+        /*
+        //TODO: feature WIP (navigation drawer show teams the logged user is in)
+        viewModel.loggedUserTeams.observe(this, Observer<List<Team>> {
+            teams -> drawerMyTeams(navigationView, teams)
+        })
+        */
 
-        if (viewModel.isTeamsRefreshed.value == false) {
-            viewModel.loadTeams(
-                    success = { viewAdapter.notifyDataSetChanged() },
-                    fail    = { e -> showHttpErrorToast(this, e) }
-            )
-        }
+        /*TODO
+        viewModel.loadLoggedUserAvatar(viewModel.loggedUser.value!!.avatarUrl,
+                success = { bitmap ->
+                    //TODO: viewModel.loggedUser.value?.avatar = bitmap
+                    run {
+                        //TODO: headerView.user_avatar_drawer.setImageBitmap(viewModel.loggedUser.value?.avatar)
+                    }
+                },
+                fail = { e -> showHttpErrorToast(this, e) }
+        )
+        */
+
+        /*
+        //TODO: feature WIP (navigation drawer show teams the logged user is in)
+        viewModel.loadLoggedUserTeams(
+                success = { },   //TODO: not being used
+                fail    = { e -> showHttpErrorToast(this, e) }
+        )
+        */
+
+        viewModel.loadTeams(
+                success = { },   //TODO: not being used
+                fail    = { e -> showHttpErrorToast(this, e) }
+        )
 
         layoutMgr   = LinearLayoutManager(this)
-        viewAdapter = TeamsAdapter(viewModel.teams.value!!)
+        viewAdapter = TeamsAdapter(this, viewModel.teams)
 
         teams_recycler_view.apply {
             setHasFixedSize(true)
@@ -99,7 +108,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
 
     private fun drawerLoggedUser(headerView: View, loggedUser: User) {
-        headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
+        //TODO: headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
         headerView.user_followers_drawer.text = loggedUser.followers.toString()
         headerView.user_following_drawer.text = loggedUser.following.toString()
         headerView.user_nickname_drawer.text  = loggedUser.nickname
@@ -108,14 +117,16 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         else headerView.user_email_drawer.visibility = View.GONE
     }
 
-    private fun drawerMyTeams(navigationView: NavigationView) {
-        val myTeamsList = viewModel.loggedUserTeams.value as MutableList<Team>
+
+    //TODO: feature WIP (navigation drawer show teams the logged user is in)
+    //NOTE: atm is being given an emptyList() so it knows that it needs to hide "My teams" section
+    private fun drawerMyTeams(navigationView: NavigationView, teams: List<Team>) {
         val myTeamsGroup = navigationView.menu.findItem(R.id.drawer_group_my_teams)
 
-        if (!myTeamsList.isEmpty()) {
+        if (!teams.isEmpty()) {
             val subMenu = myTeamsGroup.subMenu
-            for (i in 0 until myTeamsList.size) {
-                subMenu.add(0, i, 0, myTeamsList[i].name).setIcon(R.drawable.ic_group_white_24dp)
+            for (i in 0 until teams.size) {
+                subMenu.add(0, i, 0, teams[i].name).setIcon(R.drawable.ic_group_white_24dp)
             }
         } else {
             myTeamsGroup.isVisible = false
@@ -153,9 +164,12 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 )
             }
             else -> {
+                //TODO: feature WIP (navigation drawer show teams the logged user is in)
+                /*
                 val i = Intent(this, ChatActivity::class.java)
                 i.putExtra("team", viewModel.loggedUserTeams.value!![item.itemId])
                 startActivity(i)
+                */
             }
         }
         return true

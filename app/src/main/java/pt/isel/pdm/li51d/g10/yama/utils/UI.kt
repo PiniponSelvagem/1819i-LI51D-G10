@@ -2,9 +2,9 @@ package pt.isel.pdm.li51d.g10.yama.utils
 
 import android.app.Activity
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 
 fun hideKeyboard(context: Context, view: View?) {
     if (view != null) {

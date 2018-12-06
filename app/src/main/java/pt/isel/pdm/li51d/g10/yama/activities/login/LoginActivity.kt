@@ -1,21 +1,22 @@
 package pt.isel.pdm.li51d.g10.yama.activities.login
 
-import android.arch.lifecycle.*
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teams.TeamsActivity
 import pt.isel.pdm.li51d.g10.yama.data.Preferences
-import android.view.View.OnFocusChangeListener
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
-
+import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: LoginViewModel
 
     private var isConnecting: Boolean = false
 
@@ -24,8 +25,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         checkSharedPreferences()
 
-        val viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        //viewModel.userLogged.observe(this, Observer<User> {})
+        viewModel = this.viewModel()
 
         if(savedInstanceState != null)
             isConnecting = savedInstanceState.getBoolean("is_connecting")
@@ -39,9 +39,7 @@ class LoginActivity : AppCompatActivity() {
             disableInteraction()
             viewModel.loginUser(
                     success = {
-                        val i = Intent(this, TeamsActivity::class.java)
-                        i.putExtra("loggedUser", viewModel.userLogged.value)
-                        startActivity(i)
+                        startActivity(Intent(this, TeamsActivity::class.java))
                         finish()
                     },
                     fail = { e ->
