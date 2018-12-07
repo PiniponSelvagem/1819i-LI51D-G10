@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pt.isel.pdm.li51d.g10.yama.R
-import pt.isel.pdm.li51d.g10.yama.data.dto.Message
+import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 
 class ChatAdapter(private val data: MutableList<Message>) : RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
 

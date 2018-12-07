@@ -11,14 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
-import pt.isel.pdm.li51d.g10.yama.data.dto.Message
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 
 class ChatActivity : AppCompatActivity() {
@@ -27,8 +26,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var layoutMgr: RecyclerView.LayoutManager
     private lateinit var team: Team
 
-    val billboardDocument: DocumentReference = FirebaseFirestore.getInstance().collection("billboard").document("message")
-    private val BILLBOARD_MESSAGE = "MESSAGE"
+    private lateinit var messagesCollention: CollectionReference
+    private val firebaseInstance = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +35,9 @@ class ChatActivity : AppCompatActivity() {
 
         team = intent.getSerializableExtra("team") as Team
         title = team.name
+        messagesCollention = firebaseInstance.collection("yama").document("messages").collection(team.id.toString())
 
-        billboardDocument.addSnapshotListener(this) { documentSnapshot, firebaseFirestoreException ->
+        messagesCollention.addSnapshotListener(this) { documentSnapshot, firebaseFirestoreException ->
             updateBillboardMessage(documentSnapshot)
         }
 
@@ -57,7 +57,7 @@ class ChatActivity : AppCompatActivity() {
 
                 saveBillboardMessage(set_message.text.toString())
 
-                viewModel.addMessage(Message(set_message.text.toString(), true))
+                viewModel.addMessage(set_message.text.toString())
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()
@@ -97,29 +97,36 @@ class ChatActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-
+    var count = 0
     fun saveBillboardMessage(msg: String) {
+        //TODO: commented atm since this is not the final result and this
+        //TODO:     is something that should be done by FirebaseAPI???
+        /*
         val message = mapOf(
-                BILLBOARD_MESSAGE to msg
+                "MSG" to msg
         )
 
-        billboardDocument.set(message).addOnSuccessListener {
+
+        val t = messagesCollention.document((++count).toString())
+
+        t.set(message).addOnSuccessListener {
             Log.i("THIS", "New billboard document has been saved")
         }.addOnFailureListener {
             Log.w("THIS", "New billboard document NOT saved", it)
         }
+        */
     }
 
     fun fetchBillboardMessage(view: View) {
-        billboardDocument.get().addOnSuccessListener {
+        messagesCollention.get().addOnSuccessListener {
             updateBillboardMessage(it)
         }.addOnFailureListener {
             Log.w("THIS", "New billboard document NOT saved", it)
         }
     }
 
-    private fun updateBillboardMessage(documentSnapshot: DocumentSnapshot?) {
-        if (documentSnapshot != null && documentSnapshot.exists())
-            println(documentSnapshot.getString(BILLBOARD_MESSAGE))
+    private fun updateBillboardMessage(querySnapshot: QuerySnapshot?) {
+        if (querySnapshot != null)
+            Log.i("THIS", "Collection updated:"+querySnapshot.documents.size)
     }
 }

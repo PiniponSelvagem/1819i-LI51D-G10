@@ -19,7 +19,7 @@ class YamaApplication: Application() {
         HttpRequests.init(this)
         Preferences.init(this)
 
-        var yamaRoomDatabase =
+        val yamaRoomDatabase =
                 Room.databaseBuilder(this, YamaRoomDatabase::class.java, "Yama_database")
                         //Room.inMemoryDatabaseBuilder(this, WordRoomDatabase::class.java)
                         .build()
@@ -30,7 +30,8 @@ class YamaApplication: Application() {
                 YamaDatabase(
                         yamaRoomDatabase.teamUserDao(),
                         yamaRoomDatabase.teamDao(),
-                        yamaRoomDatabase.userDao()
+                        yamaRoomDatabase.userDao(),
+                        yamaRoomDatabase.messageDao()
                 )
         )
     }

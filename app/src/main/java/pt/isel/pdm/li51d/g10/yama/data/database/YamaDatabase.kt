@@ -2,6 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import pt.isel.pdm.li51d.g10.yama.data.database.message.MessageDao
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.team.TeamDao
 import pt.isel.pdm.li51d.g10.yama.data.database.team.teamusers.TeamUser
@@ -11,7 +12,8 @@ import pt.isel.pdm.li51d.g10.yama.data.database.user.UserDao
 
 class YamaDatabase(private val teamUserDao: TeamUserDao,
                    private val teamDao: TeamDao,
-                   private val userDao: UserDao) {
+                   private val userDao: UserDao,
+                   private val messageDao: MessageDao) {
     var loggedUser: MutableLiveData<User>              = MutableLiveData()
     val allTeams:   LiveData<MutableList<Team>>        = teamDao.getAllTeams()
     val teamUsers:  MutableLiveData<MutableList<User>> = MutableLiveData()

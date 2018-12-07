@@ -21,7 +21,7 @@ class User(
         val name: String,
 
         @NonNull
-        @ColumnInfo(name = "avatarUrl")
+        @ColumnInfo(name = "avatar_url")
         val avatarUrl: String,
 
         @NonNull
