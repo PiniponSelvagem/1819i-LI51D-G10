@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
-import java.util.*
 
 @Entity(tableName = "messages")
 data class Message(
@@ -15,8 +14,8 @@ data class Message(
         val userNickname:   String,
 
         @NonNull
-        @ColumnInfo(name = "date_time")
-        val dateTime:       String,
+        @ColumnInfo(name = "timestamp")
+        val timestamp:      Long,
 
         @NonNull
         @ColumnInfo(name = "text")

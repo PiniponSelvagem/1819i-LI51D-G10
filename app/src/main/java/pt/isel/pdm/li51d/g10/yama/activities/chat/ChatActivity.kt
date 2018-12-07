@@ -17,6 +17,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
+import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 
@@ -54,10 +55,8 @@ class ChatActivity : AppCompatActivity() {
 
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
-
-                saveBillboardMessage(set_message.text.toString())
-
-                viewModel.addMessage(set_message.text.toString())
+                val timestamp = System.currentTimeMillis()
+                saveBillboardMessage(viewModel.addMessage(timestamp, set_message.text.toString()))
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()
@@ -97,24 +96,19 @@ class ChatActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    var count = 0
-    fun saveBillboardMessage(msg: String) {
-        //TODO: commented atm since this is not the final result and this
-        //TODO:     is something that should be done by FirebaseAPI???
-        /*
-        val message = mapOf(
-                "MSG" to msg
+    fun saveBillboardMessage(message: Message) {
+        val msg = mapOf(
+                "user" to message.userNickname,
+                "text" to message.text
         )
 
+        val t = messagesCollention.document(message.timestamp.toString())
 
-        val t = messagesCollention.document((++count).toString())
-
-        t.set(message).addOnSuccessListener {
+        t.set(msg).addOnSuccessListener {
             Log.i("THIS", "New billboard document has been saved")
         }.addOnFailureListener {
             Log.w("THIS", "New billboard document NOT saved", it)
         }
-        */
     }
 
     fun fetchBillboardMessage(view: View) {

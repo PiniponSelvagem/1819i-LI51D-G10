@@ -14,10 +14,11 @@ class ChatViewModel : ViewModel() {
         messageLiveData.value = mutableListOf()
     }
 
-    fun addMessage(msg: String) {
+    fun addMessage(time: Long, msg: String) : Message {
         //sample message
         //val message = Message("user.login", Date(2018, 12, 31, 10, 1), msg, true)
-        val message = Message("user.login", "DATE_TIME", msg, true)
+        val message = Message("user.nickname", time, msg, true)
         messageLiveData.value!!.add(message)
+        return message
     }
 }
