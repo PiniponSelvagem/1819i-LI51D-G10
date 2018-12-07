@@ -11,6 +11,9 @@ interface TeamDao {
     @Query("SELECT * from teams ORDER BY name ASC")
     fun getAllTeams(): LiveData<MutableList<Team>>
 
+    @Query("SELECT * from teams ORDER BY name ASC")
+    fun getAllTeamsList(): List<Team>
+
     @Insert
     fun insert(team: Team)
 

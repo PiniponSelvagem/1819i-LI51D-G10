@@ -17,52 +17,70 @@ class Repository(private val db: YamaDatabase) {
     // YamaDatabase LiveData
     val loggedUser = db.loggedUser
     val allTeams   = db.allTeams
-    val allUsers   = db.allUsers
     val teamUsers  = db.teamUsers
 
+    @SuppressLint("StaticFieldLeak")
     fun loginUser(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        if (loggedUser.value==null) {
-            GithubApi.getLoggedUser(
-                    resp = { str ->
-                        run {
-                            try {
-                                val jObj = JSONObject(str)
-                                setSharedPreference(R.string.spKey__logged_id.toString(), jObj.getString("id"))
-                                db.insertLoggedUser(convertJsonToUser(jObj))
-                                success.invoke(Unit)
-                            } catch (e: JSONException) {
-                                e.printStackTrace() //TODO: Logcat
-                            }
+        object: AsyncTask<Unit, Void, Void>() {
+            override fun doInBackground(vararg params: Unit?): Void? {
+                val cachedUserID = getSharedPreference(R.string.spKey__logged_id.toString())
+                if (cachedUserID == "" || !db.isLoggedUserPresent(cachedUserID.toInt())) {
+                    createLoggedUserFromWeb(success, fail)
+                }
+                else {
+                    success.invoke(Unit)
+                }
+                return null
+            }
+        }.execute()
+    }
+    private fun createLoggedUserFromWeb(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+        GithubApi.getLoggedUser(
+                resp = { str ->
+                    run {
+                        try {
+                            val jObj = JSONObject(str)
+                            setSharedPreference(R.string.spKey__logged_id.toString(), jObj.getString("id"))
+                            db.insertLoggedUser(convertJsonToUser(jObj))
+                            success.invoke(Unit)
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: Logcat
                         }
-                    },
-                    err = { e -> fail.invoke(e) }
-            )
-        }
-        else {
-            success.invoke(Unit)
-        }
+                    }
+                },
+                err = { e -> fail.invoke(e) }
+        )
     }
 
+    @SuppressLint("StaticFieldLeak")
     fun loadTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
-        if (allTeams.value==null) {
-            GithubApi.getTeams(
-                    getSharedPreference(R.string.spKey__login_orgID.toString()),
-                    resp = { str ->
-                        run {
-                            try {
-                                insertTeam(str)
-                                success.invoke(Unit)
-                            } catch (e: JSONException) {
-                                e.printStackTrace() //TODO: do logging
-                            }
+        object: AsyncTask<Unit, Void, Void>() {
+            override fun doInBackground(vararg params: Unit?): Void? {
+                if (!db.isAllTeamsFilled()) {
+                    createTeamFromWeb(success, fail)
+                }
+                else {
+                    success.invoke(Unit)
+                }
+                return null
+            }
+        }.execute()
+    }
+    private fun createTeamFromWeb(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+        GithubApi.getTeams(
+                getSharedPreference(R.string.spKey__login_orgID.toString()),
+                resp = { str ->
+                    run {
+                        try {
+                            insertTeam(str)
+                            success.invoke(Unit)
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: do logging
                         }
-                    },
-                    err = { e -> fail.invoke(e) }
-            )
-        }
-        else {
-            success.invoke(Unit)
-        }
+                    }
+                },
+                err = { e -> fail.invoke(e) }
+        )
     }
     private fun insertTeam(str: String) {
         val jArray = JSONArray(str)
@@ -75,27 +93,30 @@ class Repository(private val db: YamaDatabase) {
     }
 
     @SuppressLint("StaticFieldLeak")
-    fun getTeamMembers(teamID: Int, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+    fun getTeamUsers(teamID: Int, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         object: AsyncTask<Unit, Void, Void>() {
             override fun doInBackground(vararg params: Unit?): Void? {
                 if (!db.getTeamUsers(teamID)) {
-                    GithubApi.getTeamUsers(teamID,
-                            resp = { str ->
-                                run {
-                                    try {
-                                        teamUsers(teamID, str, success, fail)
-                                        success.invoke(Unit)
-                                    } catch (e: JSONException) {
-                                        e.printStackTrace() //TODO: do logging
-                                    }
-                                }
-                            },
-                            err = { e -> fail.invoke(e) }
-                    )
+                    createTeamUsersFromWeb(teamID, success, fail)
                 }
                 return null
             }
         }.execute()
+    }
+    private fun createTeamUsersFromWeb(teamID: Int, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
+        GithubApi.getTeamUsers(teamID,
+                resp = { str ->
+                    run {
+                        try {
+                            teamUsers(teamID, str, success, fail)
+                            success.invoke(Unit)
+                        } catch (e: JSONException) {
+                            e.printStackTrace() //TODO: do logging
+                        }
+                    }
+                },
+                err = { e -> fail.invoke(e) }
+        )
     }
     private fun teamUsers(teamID: Int, response: String, success: (Unit) -> Unit, fail: (Exception) -> Unit) {
         val jArray = JSONArray(response)
@@ -120,20 +141,6 @@ class Repository(private val db: YamaDatabase) {
     }
 
 
-
-
-
-    fun getTeams(orgID: String, resp: (String) -> Unit, err: (Exception) -> Unit) {
-        GithubApi.getTeams(orgID, resp, err)
-    }
-
-    fun getUser(url: String, resp: (String) -> Unit, err: (Exception) -> Unit){
-        GithubApi.getUser(url, resp, err)
-    }
-
-    fun getLoggedUser(resp: (String) -> Unit, err: (Exception) -> Unit){
-        GithubApi.getLoggedUser(resp, err)
-    }
 
     //TODO: maybe place in AvatarAPI
     fun getUserImage(url: String, width: Int, height: Int, headers: Map<String, String> = mapOf(),
@@ -160,4 +167,7 @@ class Repository(private val db: YamaDatabase) {
         Preferences.remove(key)
     }
 
+    fun deleteAllData() {
+        db.deleteAllData()
+    }
 }

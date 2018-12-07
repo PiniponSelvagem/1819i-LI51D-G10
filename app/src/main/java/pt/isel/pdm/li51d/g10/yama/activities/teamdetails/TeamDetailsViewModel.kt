@@ -16,7 +16,7 @@ class TeamDetailsViewModel(private val repository: Repository) : ViewModel() {
     fun loadTeamMembers(teamID: Int, width: Int, height: Int,
                         success: (Unit) -> Unit, fail: (Exception) -> Unit) {
 
-        repository.getTeamMembers(teamID, success, fail)
+        repository.getTeamUsers(teamID, success, fail)
     }
 
 

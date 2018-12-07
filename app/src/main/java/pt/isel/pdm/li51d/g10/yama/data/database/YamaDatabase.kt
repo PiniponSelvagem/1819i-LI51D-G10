@@ -12,9 +12,8 @@ import pt.isel.pdm.li51d.g10.yama.data.database.user.UserDao
 class YamaDatabase(private val teamUserDao: TeamUserDao,
                    private val teamDao: TeamDao,
                    private val userDao: UserDao) {
-    var loggedUser: MutableLiveData<User>       = MutableLiveData()
-    val allTeams:   LiveData<MutableList<Team>> = teamDao.getAllTeams()
-    val allUsers:   LiveData<MutableList<User>> = userDao.getAllUsers()
+    var loggedUser: MutableLiveData<User>              = MutableLiveData()
+    val allTeams:   LiveData<MutableList<Team>>        = teamDao.getAllTeams()
     val teamUsers:  MutableLiveData<MutableList<User>> = MutableLiveData()
 
     fun insert(team: Team) {
@@ -58,5 +57,32 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
             return false
         teamUsers.postValue(teamUsersList)
         return true
+    }
+
+
+
+    fun isLoggedUserPresent(userID: Int) : Boolean {
+        val user = userDao.getUser(userID)
+        if (user.id != userID)
+            return false
+        loggedUser.postValue(user)
+        return true
+    }
+
+    fun isAllTeamsFilled() : Boolean {
+        val teamsList = teamDao.getAllTeamsList()
+        if (teamsList.isEmpty())
+            return false
+        return true
+    }
+
+    fun deleteAllData() {
+        object : DaoAsyncProcessor<Unit>(null) {
+            override fun doAsync() {
+                teamUserDao.deleteAll()
+                teamDao.deleteAll()
+                userDao.deleteAll()
+            }
+        }.start()
     }
 }

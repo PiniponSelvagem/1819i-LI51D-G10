@@ -3,6 +3,8 @@ package pt.isel.pdm.li51d.g10.yama.data.database
 import android.os.AsyncTask
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import pt.isel.pdm.li51d.g10.yama.R
+import pt.isel.pdm.li51d.g10.yama.data.Preferences
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.team.TeamDao
 import pt.isel.pdm.li51d.g10.yama.data.database.team.teamusers.TeamUser
@@ -26,9 +28,12 @@ class PopulateDbAsync internal constructor(db: YamaRoomDatabase) : AsyncTask<Voi
     private val userDao:     UserDao     = db.userDao()
 
     override fun doInBackground(vararg params: Void): Void? {
-        teamUserDao.deleteAll()
-        teamDao.deleteAll()
-        userDao.deleteAll()
+        if (Preferences.get(R.string.spKey__logged_id.toString()) == "") {
+            teamUserDao.deleteAll()
+            teamDao.deleteAll()
+            userDao.deleteAll()
+        }
+
         /*
         var word = Team("Hello")
         mDao.insert(word)

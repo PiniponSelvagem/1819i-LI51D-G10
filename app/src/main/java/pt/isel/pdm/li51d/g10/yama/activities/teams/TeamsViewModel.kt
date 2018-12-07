@@ -22,6 +22,8 @@ class TeamsViewModel(private val repository: Repository) : ViewModel() {
     fun removeCredentials() {
         repository.removeSharedPreference(R.string.spKey__login_token.toString())
         repository.removeSharedPreference(R.string.spKey__login_orgID.toString())
+        repository.removeSharedPreference(R.string.spKey__logged_id.toString())
+        repository.deleteAllData()
     }
 
 
