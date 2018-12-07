@@ -15,8 +15,11 @@ interface UserDao {
     @Query("SELECT * from users WHERE id == :id")
     fun getUser(id: Int): User
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: User)
+
+    @Query("UPDATE users SET avatar=:avatar WHERE id == :id")
+    fun update(id: Int, avatar: ByteArray)
 
     @Query("DELETE FROM users")
     fun deleteAll()

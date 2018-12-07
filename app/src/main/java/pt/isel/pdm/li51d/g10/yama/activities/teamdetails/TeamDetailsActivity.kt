@@ -31,9 +31,7 @@ class TeamDetailsActivity : AppCompatActivity() {
             viewAdapter.notifyDataSetChanged()
         })
 
-        //TODO: user_avatar.maxWidth, user_avatar.maxHeight,
-        //hardcoded for now, since user_avatar is coming null
-        viewModel.loadTeamMembers(team.id, 500, 500,
+        viewModel.loadTeamMembers(team.id,
                 success = { },
                 fail = { e -> showHttpErrorToast(this, e) }
         )

@@ -13,10 +13,10 @@ class ChatAdapter(private val data: MutableList<Message>) : RecyclerView.Adapter
     private val TAG = ChatAdapter::class.java.simpleName
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val chatText   = itemView.findViewById<TextView>(R.id.chat_text)
+        val chatText = itemView.findViewById<TextView>(R.id.chat_text)
 
         fun bindItems(msg: Message) {
-            chatText.text   = msg.text
+            chatText.text = msg.text
         }
     }
 

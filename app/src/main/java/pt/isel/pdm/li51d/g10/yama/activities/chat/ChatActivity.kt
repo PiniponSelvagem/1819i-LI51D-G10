@@ -122,5 +122,7 @@ class ChatActivity : AppCompatActivity() {
     private fun updateBillboardMessage(querySnapshot: QuerySnapshot?) {
         if (querySnapshot != null)
             Log.i("THIS", "Collection updated:"+querySnapshot.documents.size)
+        else
+            Log.i("THIS", "collection came null")
     }
 }

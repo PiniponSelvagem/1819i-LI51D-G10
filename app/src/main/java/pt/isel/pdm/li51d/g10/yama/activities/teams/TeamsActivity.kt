@@ -21,6 +21,7 @@ import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.login.LoginActivity
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.user.User
+import pt.isel.pdm.li51d.g10.yama.utils.convertBytesToBitmap
 import pt.isel.pdm.li51d.g10.yama.utils.showDialogYesNo
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
@@ -107,7 +108,7 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
 
     private fun drawerLoggedUser(headerView: View, loggedUser: User) {
-        //TODO: headerView.user_avatar_drawer.setImageBitmap(loggedUser.avatar)
+        headerView.user_avatar_drawer.setImageBitmap(convertBytesToBitmap(loggedUser.avatar))
         headerView.user_followers_drawer.text = loggedUser.followers.toString()
         headerView.user_following_drawer.text = loggedUser.following.toString()
         headerView.user_nickname_drawer.text  = loggedUser.nickname

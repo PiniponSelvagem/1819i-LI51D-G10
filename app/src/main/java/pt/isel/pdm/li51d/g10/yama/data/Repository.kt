@@ -1,7 +1,6 @@
 package pt.isel.pdm.li51d.g10.yama.data
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.AsyncTask
 import org.json.JSONArray
 import org.json.JSONException
@@ -10,7 +9,8 @@ import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.database.YamaDatabase
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.team.teamusers.TeamUser
-import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
+import pt.isel.pdm.li51d.g10.yama.data.database.user.User
+import pt.isel.pdm.li51d.g10.yama.utils.convertBitmapToBytes
 
 class Repository(private val db: YamaDatabase) {
 
@@ -39,9 +39,10 @@ class Repository(private val db: YamaDatabase) {
                 resp = { str ->
                     run {
                         try {
-                            val jObj = JSONObject(str)
-                            setSharedPreference(R.string.spKey__logged_id.toString(), jObj.getString("id"))
-                            db.insertLoggedUser(convertJsonToUser(jObj))
+                            val user = convertJsonToUser(JSONObject(str))
+                            setSharedPreference(R.string.spKey__logged_id.toString(), user.id.toString())
+                            db.insertLoggedUser(user)
+                            getUserAvatarLoggedUser(user, success)
                             success.invoke(Unit)
                         } catch (e: JSONException) {
                             e.printStackTrace() //TODO: Logcat
@@ -127,9 +128,8 @@ class Repository(private val db: YamaDatabase) {
                     resp = { str ->
                         run {
                             try {
-                                val jObjUser = JSONObject(str)
-                                db.insertTeamUsers(convertJsonToUser(jObjUser), TeamUser(teamID, jObjUser.getInt("id")))
-                                success.invoke(Unit)
+                                val user = convertJsonToUser(JSONObject(str))
+                                getUserAvatarInTeam(teamID, user, success)
                             } catch (e: JSONException) {
                                 e.printStackTrace() //TODO: do logging
                             }
@@ -140,14 +140,34 @@ class Repository(private val db: YamaDatabase) {
         }
     }
 
+    private fun getUserAvatarInTeam(teamID: Int, user: User, success: (Unit) -> Unit) {
+        GithubApi.getAvatar(user.avatarUrl,
+                resp = { bitmap ->
+                    run {
+                        user.avatar = convertBitmapToBytes(bitmap)
+                        db.insertTeamUsers(user, TeamUser(teamID, user.id))
+                        success.invoke(Unit)
+                    }
+                },
+                err = {
+                    //TODO: do logging
+                }
+        )
+    }
 
-
-    //TODO: maybe place in AvatarAPI
-    fun getUserImage(url: String, width: Int, height: Int, headers: Map<String, String> = mapOf(),
-                     resp: (Bitmap) -> Unit, err: (Exception) -> Unit){
-        HttpRequests.getBitmap(url,
-                width, height,
-                headers, resp, err)
+    private fun getUserAvatarLoggedUser(user: User, success: (Unit) -> Unit) {
+        GithubApi.getAvatar(user.avatarUrl,
+                resp = { bitmap ->
+                    run {
+                        user.avatar = convertBitmapToBytes(bitmap)
+                        db.insertLoggedUser(user)
+                        success.invoke(Unit)
+                    }
+                },
+                err = {
+                    //TODO: do logging
+                }
+        )
     }
 
     //TODO: part of the WIP for the navigation drawer to show "My teams"

@@ -5,7 +5,7 @@ import androidx.room.*
 import java.io.Serializable
 
 @Entity(tableName = "teams")
-class Team(
+data class Team(
         @PrimaryKey
         @NonNull
         @ColumnInfo(name = "id")

@@ -24,4 +24,4 @@ data class Message(
         @NonNull
         @ColumnInfo(name = "from_logged_user")
         val fromLoggedUser: Boolean
-) : Serializable
+)

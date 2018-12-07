@@ -38,7 +38,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
                 userDao.insert(user)
-                loggedUser.postValue(userDao.getUser(user.id))
+                loggedUser.postValue(user)
             }
         }.start()
     }

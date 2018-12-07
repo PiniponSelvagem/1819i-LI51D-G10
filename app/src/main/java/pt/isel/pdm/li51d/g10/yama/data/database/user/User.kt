@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
-class User(
+data class User(
         @PrimaryKey
         @NonNull
         @ColumnInfo(name = "id")
@@ -46,5 +46,9 @@ class User(
 
         @NonNull
         @ColumnInfo(name = "bio")
-        val bio: String
+        val bio: String,
+
+        @Suppress("ArrayInDataClass")
+        @ColumnInfo(name = "avatar")
+        var avatar: ByteArray? = null
 )

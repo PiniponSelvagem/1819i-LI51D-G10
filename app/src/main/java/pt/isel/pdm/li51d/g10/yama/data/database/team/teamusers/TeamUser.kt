@@ -21,7 +21,7 @@ import pt.isel.pdm.li51d.g10.yama.data.database.user.User
                     parentColumns = ["id"],
                     childColumns = ["user_id"])
         ])
-class TeamUser(
+data class TeamUser(
         @ColumnInfo(name = "team_id") val teamId: Int,
         @ColumnInfo(name = "user_id") val userId: Int
 )

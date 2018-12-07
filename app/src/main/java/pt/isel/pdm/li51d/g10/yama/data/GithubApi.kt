@@ -1,5 +1,6 @@
 package pt.isel.pdm.li51d.g10.yama.data
 
+import android.graphics.Bitmap
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 import pt.isel.pdm.li51d.g10.yama.utils.createTokenHeader
@@ -46,6 +47,16 @@ object GithubApi {
     fun getUser(url: String, resp: (String) -> Unit, err: (Exception) -> Unit) {
         HttpRequests.getString(
                 url,
+                headers,
+                resp,
+                err
+        )
+    }
+
+    fun getAvatar(url: String, resp: (Bitmap) -> Unit, err: (Exception) -> Unit) {
+        HttpRequests.getBitmap(
+                url,
+                500, 500,
                 headers,
                 resp,
                 err
