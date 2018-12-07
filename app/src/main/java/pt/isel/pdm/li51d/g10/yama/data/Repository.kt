@@ -3,6 +3,7 @@ package pt.isel.pdm.li51d.g10.yama.data
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.AsyncTask
+import androidx.lifecycle.LiveData
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -15,9 +16,10 @@ import pt.isel.pdm.li51d.g10.yama.network.HttpRequests
 class Repository(private val db: YamaDatabase) {
 
     // YamaDatabase LiveData
-    val loggedUser = db.loggedUser
-    val allTeams   = db.allTeams
-    val teamUsers  = db.teamUsers
+    val loggedUser   = db.loggedUser
+    val allTeams     = db.allTeams
+    val teamUsers    = db.teamUsers
+    val userMessages = db.userMessages
 
     @SuppressLint("StaticFieldLeak")
     fun loginUser(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
@@ -169,5 +171,9 @@ class Repository(private val db: YamaDatabase) {
 
     fun deleteAllData() {
         db.deleteAllData()
+    }
+
+    fun loadMessages(teamId: Int) {
+        db.getMessagesFromTeam(teamId)
     }
 }
