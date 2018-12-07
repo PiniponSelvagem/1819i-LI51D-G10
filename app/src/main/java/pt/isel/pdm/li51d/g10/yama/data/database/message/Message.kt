@@ -3,10 +3,16 @@ package pt.isel.pdm.li51d.g10.yama.data.database.message
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 
-@Entity(tableName = "messages")
+@Entity(tableName = "messages",
+        foreignKeys = [
+            ForeignKey(entity = Team::class,
+                    parentColumns = ["id"],
+                    childColumns = ["teamId"])
+        ])
 data class Message(
         @PrimaryKey
         @NonNull
@@ -23,5 +29,9 @@ data class Message(
 
         @NonNull
         @ColumnInfo(name = "from_logged_user")
-        val fromLoggedUser: Boolean
+        val fromLoggedUser: Boolean,
+
+        @NonNull
+        @ColumnInfo(name = "teamId")
+        val teamId:         Int
 )

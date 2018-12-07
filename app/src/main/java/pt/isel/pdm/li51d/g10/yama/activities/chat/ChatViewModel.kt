@@ -3,9 +3,10 @@ package pt.isel.pdm.li51d.g10.yama.activities.chat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 
-class ChatViewModel : ViewModel() {
+class ChatViewModel(private val repository: Repository) : ViewModel() {
 
     private val messageLiveData = MutableLiveData<MutableList<Message>>()
     val message: LiveData<MutableList<Message>> = messageLiveData
@@ -14,11 +15,15 @@ class ChatViewModel : ViewModel() {
         messageLiveData.value = mutableListOf()
     }
 
-    fun addMessage(time: Long, msg: String) : Message {
+    fun addMessage(time: Long, msg: String, teamId: Int) : Message {
         //sample message
         //val message = Message("user.login", Date(2018, 12, 31, 10, 1), msg, true)
-        val message = Message("user.nickname", time, msg, true)
+        val message = Message("user.nickname", time, msg, true, teamId)
         messageLiveData.value!!.add(message)
         return message
+    }
+
+    fun loadMessages(teamId: Int) {
+        repository.loadMessages(teamId)
     }
 }

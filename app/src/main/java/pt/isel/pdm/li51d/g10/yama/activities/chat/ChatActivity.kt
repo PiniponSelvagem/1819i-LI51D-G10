@@ -20,12 +20,14 @@ import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
 import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
+import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var layoutMgr: RecyclerView.LayoutManager
     private lateinit var team: Team
+    private lateinit var viewModel: ChatViewModel
 
     private lateinit var messagesCollention: CollectionReference
     private val firebaseInstance = FirebaseFirestore.getInstance()
@@ -48,7 +50,7 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        val viewModel = ViewModelProviders.of(this).get(ChatViewModel::class.java)
+        viewModel = this.viewModel()
 
         layoutMgr = LinearLayoutManager(this)
         viewAdapter = ChatAdapter(viewModel.message.value!!)
@@ -56,7 +58,7 @@ class ChatActivity : AppCompatActivity() {
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
                 val timestamp = System.currentTimeMillis()
-                saveBillboardMessage(viewModel.addMessage(timestamp, set_message.text.toString()))
+                saveBillboardMessage(viewModel.addMessage(timestamp, set_message.text.toString(), team.id))
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()

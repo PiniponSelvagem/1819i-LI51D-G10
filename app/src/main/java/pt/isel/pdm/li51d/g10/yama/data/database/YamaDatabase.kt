@@ -2,6 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.message.MessageDao
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.team.TeamDao
@@ -14,9 +15,10 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
                    private val teamDao: TeamDao,
                    private val userDao: UserDao,
                    private val messageDao: MessageDao) {
-    var loggedUser: MutableLiveData<User>              = MutableLiveData()
-    val allTeams:   LiveData<MutableList<Team>>        = teamDao.getAllTeams()
-    val teamUsers:  MutableLiveData<MutableList<User>> = MutableLiveData()
+    var loggedUser:   MutableLiveData<User>                 = MutableLiveData()
+    val allTeams:     LiveData<MutableList<Team>>           = teamDao.getAllTeams()
+    val teamUsers:    MutableLiveData<MutableList<User>>    = MutableLiveData()
+    val userMessages: MutableLiveData<MutableList<Message>> = MutableLiveData()
 
     fun insert(team: Team) {
         object : DaoAsyncProcessor<Unit>(null) {
@@ -84,6 +86,14 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
                 teamUserDao.deleteAll()
                 teamDao.deleteAll()
                 userDao.deleteAll()
+            }
+        }.start()
+    }
+
+    fun getMessagesFromTeam(teamId: Int) {
+        object : DaoAsyncProcessor<Unit>(null) {
+            override fun doAsync() {
+                messageDao.getTeamMessages(teamId)
             }
         }.start()
     }
