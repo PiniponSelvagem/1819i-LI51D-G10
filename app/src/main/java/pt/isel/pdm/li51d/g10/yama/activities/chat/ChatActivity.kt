@@ -125,17 +125,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchMessages() {
-        messagesCollention.get().addOnSuccessListener {
-            viewModel.fetchMessages(team.id, it)
-        }.addOnFailureListener {
-            Log.w("THIS", "New billboard document NOT saved", it)
-        }
-    }
-
     private fun updateMessages(querySnapshot: QuerySnapshot?) {
         if (querySnapshot != null) {
-            Log.i("THIS", querySnapshot.documentChanges.size.toString())
             viewModel.fetchMessages(team.id, querySnapshot)
             Log.i("THIS", "Collection updated")
         }

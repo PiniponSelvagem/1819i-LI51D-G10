@@ -21,7 +21,6 @@ class YamaApplication: Application() {
 
         val yamaRoomDatabase =
                 Room.databaseBuilder(this, YamaRoomDatabase::class.java, "Yama_database")
-                        //Room.inMemoryDatabaseBuilder(this, WordRoomDatabase::class.java)
                         .build()
 
         PopulateDbAsync(yamaRoomDatabase).execute()
