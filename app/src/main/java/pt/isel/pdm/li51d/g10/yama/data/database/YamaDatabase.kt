@@ -18,7 +18,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     var loggedUser:   MutableLiveData<User>                 = MutableLiveData()
     val allTeams:     LiveData<MutableList<Team>>           = teamDao.getAllTeams()
     val teamUsers:    MutableLiveData<MutableList<User>>    = MutableLiveData()
-    val userMessages: MutableLiveData<MutableList<Message>> = MutableLiveData()
+    val teamMessages: MutableLiveData<MutableList<Message>> = MutableLiveData()
 
     fun insert(team: Team) {
         object : DaoAsyncProcessor<Unit>(null) {
@@ -64,7 +64,6 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     }
 
 
-
     fun isLoggedUserPresent(userID: Int) : Boolean {
         val user = userDao.getUser(userID)
         if (user.id != userID)
@@ -90,10 +89,19 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
         }.start()
     }
 
-    fun getMessagesFromTeam(teamId: Int) {
+
+    fun insert(message: Message) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                messageDao.getTeamMessages(teamId)
+                messageDao.insert(message)
+            }
+        }.start()
+    }
+
+    fun getMessagesForTeam(teamId: Int) {
+        object : DaoAsyncProcessor<Unit>(null) {
+            override fun doAsync() {
+                teamMessages.postValue(messageDao.getTeamMessages(teamId))
             }
         }.start()
     }

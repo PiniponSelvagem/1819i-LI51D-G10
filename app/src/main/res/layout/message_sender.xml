@@ -1,54 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingStart="15dp"
-    android:paddingEnd="60dp"
-    android:clipToPadding="false">
-
-    <!--
-    <View
-        android:id="@+id/avatar"
-        android:layout_alignParentLeft="true"
-        android:scaleType="centerInside"
-        android:background="@drawable/circle"
-        android:layout_width="34dp"
-        android:layout_height="34dp" />
-        -->
-
-    <!--
-    <TextView
-        android:id="@+id/name"
-        android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@+id/avatar"
-        android:layout_alignTop="@+id/avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:text="Rose"/>
-        -->
+    android:clipToPadding="false"
+    android:paddingStart="10dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="70dp"
+    android:paddingBottom="4dp">
 
     <TextView
+        android:id="@+id/chat_usernickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:text="Nickname"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/chat_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/chat_usernickname"
         android:background="@drawable/message_bubble_sender"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-
+        android:padding="10dp"
+        android:text="A little bigger placeholder message that goes all the way."
         android:textSize="18sp"
-        android:text="How are you doing? This is a long message that should probably wrap."
-        />
+        app:layout_constraintStart_toStartOf="@+id/chat_usernickname"
+        app:layout_constraintTop_toBottomOf="@+id/chat_usernickname" />
 
-    <!--
-        android:elevation="2dp"
-        android:paddingHorizontal="16dp"
-        android:layout_below="@+id/name"
-        android:layout_alignLeft="@+id/name"
-    -->
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

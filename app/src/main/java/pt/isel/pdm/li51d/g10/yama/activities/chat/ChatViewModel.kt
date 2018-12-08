@@ -1,29 +1,32 @@
 package pt.isel.pdm.li51d.g10.yama.activities.chat
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.QuerySnapshot
 import pt.isel.pdm.li51d.g10.yama.data.Repository
 import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 
 class ChatViewModel(private val repository: Repository) : ViewModel() {
 
-    private val messageLiveData = MutableLiveData<MutableList<Message>>()
-    val message: LiveData<MutableList<Message>> = messageLiveData
-
-    init {
-        messageLiveData.value = mutableListOf()
+    val teamMessages: MutableLiveData<MutableList<Message>> = repository.teamMessages.also {
+        if (repository.teamMessages.value != null) repository.teamMessages.value!!.clear()
     }
 
-    fun addMessage(time: Long, msg: String, teamId: Int) : Message {
-        //sample message
-        //val message = Message("user.login", Date(2018, 12, 31, 10, 1), msg, true)
-        val message = Message("user.nickname", time, msg, true, teamId)
-        messageLiveData.value!!.add(message)
-        return message
+    fun addMessage(timestamp: Long, text: String, teamID: Int) : Message {
+        return Message(
+                repository.loggedUser.value!!.nickname,
+                timestamp,
+                text,
+                teamID,
+                true
+        )
     }
 
-    fun loadMessages(teamId: Int) {
-        repository.loadMessages(teamId)
+    fun fetchMessages(teamID: Int, querySnapshot: QuerySnapshot) {
+        repository.fetchMessages(teamID, querySnapshot)
+    }
+
+    fun updateMessages(teamID: Int, querySnapshot: QuerySnapshot) {
+        //repository.updateMessages()
     }
 }

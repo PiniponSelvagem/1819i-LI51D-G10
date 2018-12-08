@@ -2,7 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.data
 
 import android.annotation.SuppressLint
 import android.os.AsyncTask
-import androidx.lifecycle.LiveData
+import com.google.firebase.firestore.QuerySnapshot
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -19,7 +19,7 @@ class Repository(private val db: YamaDatabase) {
     val loggedUser   = db.loggedUser
     val allTeams     = db.allTeams
     val teamUsers    = db.teamUsers
-    val userMessages = db.userMessages
+    val teamMessages = db.teamMessages
 
     @SuppressLint("StaticFieldLeak")
     fun loginUser(success: (Unit) -> Unit, fail: (Exception) -> Unit) {
@@ -173,7 +173,7 @@ class Repository(private val db: YamaDatabase) {
     }
 
     //TODO: part of the WIP for the navigation drawer to show "My teams"
-    fun getUserTeams(resp: (String) -> Unit, err: (Exception) -> Unit){
+    fun getUserTeams(resp: (String) -> Unit, err: (Exception) -> Unit) {
         GithubApi.getUserTeams(resp, err)
     }
 
@@ -193,7 +193,11 @@ class Repository(private val db: YamaDatabase) {
         db.deleteAllData()
     }
 
-    fun loadMessages(teamId: Int) {
-        db.getMessagesFromTeam(teamId)
+    fun fetchMessages(teamId: Int, querySnapshot: QuerySnapshot) {
+        val msgList = FirebaseAPI.fetchMessages(teamId, loggedUser.value!!.nickname, querySnapshot)
+        for (i in 0 until msgList.size) {
+            db.insert(msgList[i])
+        }
+        db.getMessagesForTeam(teamId)
     }
 }

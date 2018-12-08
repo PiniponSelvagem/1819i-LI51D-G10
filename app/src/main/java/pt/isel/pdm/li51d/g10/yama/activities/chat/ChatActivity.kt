@@ -5,10 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.OnFocusChangeListener
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.CollectionReference
@@ -21,6 +20,9 @@ import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+
+
 
 class ChatActivity : AppCompatActivity() {
 
@@ -29,8 +31,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var team: Team
     private lateinit var viewModel: ChatViewModel
 
+    private val firestore = FirebaseFirestore.getInstance()
     private lateinit var messagesCollention: CollectionReference
-    private val firebaseInstance = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +40,15 @@ class ChatActivity : AppCompatActivity() {
 
         team = intent.getSerializableExtra("team") as Team
         title = team.name
-        messagesCollention = firebaseInstance.collection("yama").document("messages").collection(team.id.toString())
 
-        messagesCollention.addSnapshotListener(this) { documentSnapshot, firebaseFirestoreException ->
-            updateBillboardMessage(documentSnapshot)
+        val settings = FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build()
+        firestore.firestoreSettings = settings
+        messagesCollention = firestore.collection("yama").document("messages").collection(team.id.toString())
+
+        messagesCollention.addSnapshotListener(this) { querySnapshot, firebaseFirestoreException ->
+            updateMessages(querySnapshot)
         }
 
         chat_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
@@ -51,14 +58,18 @@ class ChatActivity : AppCompatActivity() {
         }
 
         viewModel = this.viewModel()
+        viewModel.teamMessages.observe(this, Observer<MutableList<Message>> {
+            viewAdapter.notifyDataSetChanged()
+            scrollToBottom()
+        })
 
         layoutMgr = LinearLayoutManager(this)
-        viewAdapter = ChatAdapter(viewModel.message.value!!)
+        viewAdapter = ChatAdapter(this, viewModel.teamMessages)
 
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
                 val timestamp = System.currentTimeMillis()
-                saveBillboardMessage(viewModel.addMessage(timestamp, set_message.text.toString(), team.id))
+                sendMessage(viewModel.addMessage(timestamp, set_message.text.toString(), team.id))
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()
@@ -73,7 +84,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun scrollToBottom() {
-        chat_recyclerView.smoothScrollToPosition(viewAdapter.itemCount - 1)
+        if (viewAdapter.itemCount > 0)
+            chat_recyclerView.smoothScrollToPosition(viewAdapter.itemCount - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -98,7 +110,7 @@ class ChatActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    fun saveBillboardMessage(message: Message) {
+    private fun sendMessage(message: Message) {
         val msg = mapOf(
                 "user" to message.userNickname,
                 "text" to message.text
@@ -113,18 +125,22 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    fun fetchBillboardMessage(view: View) {
+    private fun fetchMessages() {
         messagesCollention.get().addOnSuccessListener {
-            updateBillboardMessage(it)
+            viewModel.fetchMessages(team.id, it)
         }.addOnFailureListener {
             Log.w("THIS", "New billboard document NOT saved", it)
         }
     }
 
-    private fun updateBillboardMessage(querySnapshot: QuerySnapshot?) {
-        if (querySnapshot != null)
-            Log.i("THIS", "Collection updated:"+querySnapshot.documents.size)
-        else
+    private fun updateMessages(querySnapshot: QuerySnapshot?) {
+        if (querySnapshot != null) {
+            Log.i("THIS", querySnapshot.documentChanges.size.toString())
+            viewModel.fetchMessages(team.id, querySnapshot)
+            Log.i("THIS", "Collection updated")
+        }
+        else {
             Log.i("THIS", "collection came null")
+        }
     }
 }
