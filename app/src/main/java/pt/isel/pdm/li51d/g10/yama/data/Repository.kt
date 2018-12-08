@@ -194,9 +194,8 @@ class Repository(private val db: YamaDatabase) {
         db.deleteAllData()
     }
 
-    fun loadMessages(teamId: Int) {
-        //TODO: Decide between getting the messages from FirebaseDB or RoomDB (maybe wether there is Internet Connection or not)
-        if(/*INTERNET ? */){
+    fun loadMessages(teamId: Int, isInternetAvailable: Boolean) {
+        if(isInternetAvailable){
             loadMessagesFromFirebase(teamId)
         }
         else{
@@ -212,9 +211,8 @@ class Repository(private val db: YamaDatabase) {
         FirebaseAPI.fetchBillboardMessage(teamId)
     }
 
-    fun saveMessage(msg: Message) {
-        //TODO: Decide between saving the messages to FirebaseDB or RoomDB (maybe wether there is Internet Connection or not)
-        if(/*INTERNET ? */){
+    fun saveMessage(msg: Message, isInternetAvailable: Boolean) {
+        if(isInternetAvailable){
             saveMessagesToFirebase(msg)
             saveMessagesToRoom(msg)
         }

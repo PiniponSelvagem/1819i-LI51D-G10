@@ -1,18 +1,17 @@
 package pt.isel.pdm.li51d.g10.yama.activities.chat
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.OnFocusChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
@@ -39,7 +38,7 @@ class ChatActivity : AppCompatActivity() {
         messagesCollection = firebaseInstance.collection("yama").document("messages").collection(team.id.toString())
 
         messagesCollection.addSnapshotListener(this) { _, _ ->
-            viewModel.updateBillboardMessage(team.id)
+            viewModel.updateBillboardMessage(team.id, isInternetAvailable())
         }
 
         chat_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
@@ -56,7 +55,7 @@ class ChatActivity : AppCompatActivity() {
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
                 val timestamp = System.currentTimeMillis()
-                viewModel.addMessage(timestamp, set_message.text.toString(), team.id)
+                viewModel.addMessage(timestamp, set_message.text.toString(), team.id, isInternetAvailable())
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()
@@ -96,4 +95,9 @@ class ChatActivity : AppCompatActivity() {
         startActivity(i)
     }
 
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnected
+    }
 }

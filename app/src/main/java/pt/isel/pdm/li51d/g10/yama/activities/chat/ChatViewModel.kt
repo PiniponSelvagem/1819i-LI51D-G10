@@ -15,16 +15,16 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         messageLiveData.value = mutableListOf()
     }
 
-    fun addMessage(time: Long, msg: String, teamId: Int) : Message {
+    fun addMessage(time: Long, msg: String, teamId: Int, isInternetAvailable: Boolean) : Message {
         //sample message
         //val message = Message("user.login", Date(2018, 12, 31, 10, 1), msg, true)
         val message = Message("user.nickname", time, msg, true, teamId)
         messageLiveData.value!!.add(message)
-        repository.saveMessage(message)
+        repository.saveMessage(message, isInternetAvailable)
         return message
     }
 
-    fun updateBillboardMessage(teamId: Int) {
-        repository.loadMessages(teamId)
+    fun updateBillboardMessage(teamId: Int, isInternetAvailable: Boolean) {
+        repository.loadMessages(teamId, isInternetAvailable)
     }
 }
