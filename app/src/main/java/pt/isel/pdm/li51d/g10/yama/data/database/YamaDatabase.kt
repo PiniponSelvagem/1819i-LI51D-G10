@@ -36,6 +36,14 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
         }.start()
     }
 
+    fun insert(msg: Message) {
+        object : DaoAsyncProcessor<Unit>(null) {
+            override fun doAsync() {
+                messageDao.insert(msg)
+            }
+        }.start()
+    }
+
     fun insertLoggedUser(user: User) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
@@ -93,7 +101,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun getMessagesFromTeam(teamId: Int) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                messageDao.getTeamMessages(teamId)
+                messageDao.getTeamMessages(teamId).value!!.forEach { userMessages.postValue(mutableListOf(it)) }
             }
         }.start()
     }

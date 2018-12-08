@@ -20,10 +20,11 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
         //val message = Message("user.login", Date(2018, 12, 31, 10, 1), msg, true)
         val message = Message("user.nickname", time, msg, true, teamId)
         messageLiveData.value!!.add(message)
+        repository.saveMessage(message)
         return message
     }
 
-    fun loadMessages(teamId: Int) {
+    fun updateBillboardMessage(teamId: Int) {
         repository.loadMessages(teamId)
     }
 }

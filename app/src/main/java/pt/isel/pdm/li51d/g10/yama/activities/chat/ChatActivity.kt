@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.CollectionReference
@@ -17,7 +16,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.activities.teamdetails.TeamDetailsActivity
-import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
@@ -29,7 +27,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var team: Team
     private lateinit var viewModel: ChatViewModel
 
-    private lateinit var messagesCollention: CollectionReference
+    private lateinit var messagesCollection: CollectionReference
     private val firebaseInstance = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +36,10 @@ class ChatActivity : AppCompatActivity() {
 
         team = intent.getSerializableExtra("team") as Team
         title = team.name
-        messagesCollention = firebaseInstance.collection("yama").document("messages").collection(team.id.toString())
+        messagesCollection = firebaseInstance.collection("yama").document("messages").collection(team.id.toString())
 
-        messagesCollention.addSnapshotListener(this) { documentSnapshot, firebaseFirestoreException ->
-            updateBillboardMessage(documentSnapshot)
+        messagesCollection.addSnapshotListener(this) { _, _ ->
+            viewModel.updateBillboardMessage(team.id)
         }
 
         chat_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
@@ -58,7 +56,7 @@ class ChatActivity : AppCompatActivity() {
         btn_send.setOnClickListener {
             if (set_message.text.toString() != "") {    //check if message to send is empty
                 val timestamp = System.currentTimeMillis()
-                saveBillboardMessage(viewModel.addMessage(timestamp, set_message.text.toString(), team.id))
+                viewModel.addMessage(timestamp, set_message.text.toString(), team.id)
                 set_message.text.clear()
                 viewAdapter.notifyDataSetChanged()
                 scrollToBottom()
@@ -98,33 +96,4 @@ class ChatActivity : AppCompatActivity() {
         startActivity(i)
     }
 
-    fun saveBillboardMessage(message: Message) {
-        val msg = mapOf(
-                "user" to message.userNickname,
-                "text" to message.text
-        )
-
-        val t = messagesCollention.document(message.timestamp.toString())
-
-        t.set(msg).addOnSuccessListener {
-            Log.i("THIS", "New billboard document has been saved")
-        }.addOnFailureListener {
-            Log.w("THIS", "New billboard document NOT saved", it)
-        }
-    }
-
-    fun fetchBillboardMessage(view: View) {
-        messagesCollention.get().addOnSuccessListener {
-            updateBillboardMessage(it)
-        }.addOnFailureListener {
-            Log.w("THIS", "New billboard document NOT saved", it)
-        }
-    }
-
-    private fun updateBillboardMessage(querySnapshot: QuerySnapshot?) {
-        if (querySnapshot != null)
-            Log.i("THIS", "Collection updated:"+querySnapshot.documents.size)
-        else
-            Log.i("THIS", "collection came null")
-    }
 }

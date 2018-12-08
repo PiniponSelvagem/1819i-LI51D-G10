@@ -8,6 +8,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import pt.isel.pdm.li51d.g10.yama.R
 import pt.isel.pdm.li51d.g10.yama.data.database.YamaDatabase
+import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.data.database.team.teamusers.TeamUser
 import pt.isel.pdm.li51d.g10.yama.data.database.user.User
@@ -194,6 +195,39 @@ class Repository(private val db: YamaDatabase) {
     }
 
     fun loadMessages(teamId: Int) {
+        //TODO: Decide between getting the messages from FirebaseDB or RoomDB (maybe wether there is Internet Connection or not)
+        if(/*INTERNET ? */){
+            loadMessagesFromFirebase(teamId)
+        }
+        else{
+            loadMessagesFromRoom(teamId)
+        }
+    }
+
+    fun loadMessagesFromRoom(teamId: Int) {
         db.getMessagesFromTeam(teamId)
+    }
+
+    fun loadMessagesFromFirebase(teamId: Int) {
+        FirebaseAPI.fetchBillboardMessage(teamId)
+    }
+
+    fun saveMessage(msg: Message) {
+        //TODO: Decide between saving the messages to FirebaseDB or RoomDB (maybe wether there is Internet Connection or not)
+        if(/*INTERNET ? */){
+            saveMessagesToFirebase(msg)
+            saveMessagesToRoom(msg)
+        }
+        else{
+            saveMessagesToRoom(msg)
+        }
+    }
+
+    fun saveMessagesToRoom(msg: Message) {
+        db.insert(msg)
+    }
+
+    fun saveMessagesToFirebase(msg: Message) {
+        FirebaseAPI.saveBillboardMessage(msg)
     }
 }
