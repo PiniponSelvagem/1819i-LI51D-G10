@@ -27,7 +27,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun insert(team: Team) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Adding new team")
+                Log.d(TAG, "Adding team with id ${team.id}")
                 teamDao.insert(team)
             }
         }.start()
@@ -36,7 +36,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun insert(user: User) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Adding new user")
+                Log.d(TAG, "Adding user with id ${user.id}")
                 userDao.insert(user)
             }
         }.start()
@@ -45,7 +45,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun insertLoggedUser(user: User) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Adding user as the logged-in user")
+                Log.d(TAG, "Adding logged user with id ${user.id}")
                 userDao.insert(user)
                 loggedUser.postValue(user)
             }
@@ -55,7 +55,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun insertTeamUsers(user: User, teamUser: TeamUser) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Adding team users")
+                Log.d(TAG, "Adding to team with id ${teamUser.teamId} user with id ${user.id}")
                 userDao.insert(user)
                 teamUserDao.insert(teamUser)
                 teamUsers.postValue(teamUserDao.getUsersForTeam(teamUser.teamId))
@@ -64,7 +64,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     }
 
     fun getTeamUsers(teamId: Int) : Boolean {
-        Log.i(TAG, "Getting team users")
+        Log.d(TAG, "Getting users for team with id $teamId")
         val teamUsersList = teamUserDao.getUsersForTeam(teamId)
         if (teamUsersList.isEmpty())
             return false
@@ -72,8 +72,8 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
         return true
     }
 
-
     fun isLoggedUserPresent(userID: Int) : Boolean {
+        Log.d(TAG, "Checking if logged user with id $userID is present")
         val user = userDao.getUser(userID)
         if (user.id != userID)
             return false
@@ -82,6 +82,7 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     }
 
     fun isAllTeamsFilled() : Boolean {
+        Log.d(TAG, "Checking if teams table has data")
         val teamsList = teamDao.getAllTeamsList()
         if (teamsList.isEmpty())
             return false
@@ -91,30 +92,30 @@ class YamaDatabase(private val teamUserDao: TeamUserDao,
     fun deleteAllData() {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Deleting all data")
+                Log.d(TAG, "Deleting all data")
                 teamUserDao.deleteAll()
                 teamDao.deleteAll()
                 userDao.deleteAll()
-                Log.i(TAG, "All the data has been deleted")
+                messageDao.deleteAll()
+                Log.d(TAG, "All data has been deleted")
             }
         }.start()
     }
 
-
     fun insert(message: Message) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Adding new message")
+                Log.d(TAG, "Adding new message with timestamp ${message.timestamp}")
                 messageDao.insert(message)
             }
         }.start()
     }
 
-    fun getMessagesForTeam(teamId: Int) {
+    fun getMessagesForTeam(teamID: Int) {
         object : DaoAsyncProcessor<Unit>(null) {
             override fun doAsync() {
-                Log.i(TAG, "Getting the messages from a specific team")
-                teamMessages.postValue(messageDao.getTeamMessages(teamId))
+                Log.d(TAG, "Getting messages from team with id $teamID")
+                teamMessages.postValue(messageDao.getTeamMessages(teamID))
             }
         }.start()
     }

@@ -13,7 +13,6 @@ import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 
 class ChatAdapter constructor(private val owner: LifecycleOwner, private val data: MutableLiveData<MutableList<Message>>) : RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
 
-    private val TAG = ChatAdapter::class.java.simpleName
     private val fromOtherUser  = 0
     private val fromLoggedUser = 1
 

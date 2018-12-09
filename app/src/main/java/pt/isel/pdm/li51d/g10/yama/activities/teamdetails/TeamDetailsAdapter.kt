@@ -15,8 +15,6 @@ import pt.isel.pdm.li51d.g10.yama.utils.convertBytesToBitmap
 
 class TeamDetailsAdapter constructor(private val owner: LifecycleOwner, val data: MutableLiveData<MutableList<User>>) : RecyclerView.Adapter<TeamDetailsAdapter.ItemViewHolder>() {
 
-    private val TAG = TeamDetailsAdapter::class.java.simpleName
-
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val avatar      = itemView.findViewById<ImageView>(R.id.user_avatar)
         val nickname    = itemView.findViewById<TextView>(R.id.user_nickname)

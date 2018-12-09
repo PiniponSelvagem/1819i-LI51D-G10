@@ -25,8 +25,4 @@ class ChatViewModel(private val repository: Repository) : ViewModel() {
     fun fetchMessages(teamID: Int, querySnapshot: QuerySnapshot) {
         repository.fetchMessages(teamID, querySnapshot)
     }
-
-    fun updateMessages(teamID: Int, querySnapshot: QuerySnapshot) {
-        //repository.updateMessages()
-    }
 }

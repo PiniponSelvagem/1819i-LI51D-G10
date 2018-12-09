@@ -15,8 +15,6 @@ import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 
 class TeamsAdapter constructor(owner: LifecycleOwner, val data: LiveData<MutableList<Team>>) : RecyclerView.Adapter<TeamsAdapter.ItemViewHolder>() {
 
-    private val TAG = TeamsAdapter::class.java.simpleName
-
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val teamName = itemView.findViewById<TextView>(R.id.team_name)
         val teamId   = itemView.findViewById<TextView>(R.id.team_id)

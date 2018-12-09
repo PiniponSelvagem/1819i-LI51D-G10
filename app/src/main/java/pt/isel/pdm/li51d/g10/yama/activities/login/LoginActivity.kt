@@ -2,6 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.activities.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,8 @@ import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
 
 class LoginActivity : AppCompatActivity() {
+
+    private val TAG = LoginActivity::class.java.simpleName
 
     private lateinit var viewModel: LoginViewModel
 
@@ -54,14 +57,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
+        Log.d(TAG, "Started login")
         disableInteraction()
         viewModel.loginUser(
                 success = {
+                    Log.i(TAG, "Login successful")
                     startActivity(Intent(this, TeamsActivity::class.java))
                     finish()
                 },
                 fail = { e ->
                     run {
+                        Log.e(TAG, "Could not login. $e")
                         enableInteraction()
                         showHttpErrorToast(this, e)
                     }

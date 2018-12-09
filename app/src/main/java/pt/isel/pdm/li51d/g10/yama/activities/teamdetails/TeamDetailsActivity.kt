@@ -1,6 +1,7 @@
 package pt.isel.pdm.li51d.g10.yama.activities.teamdetails
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,8 @@ import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
 class TeamDetailsActivity : AppCompatActivity() {
+
+    private val TAG = TeamDetailsActivity::class.java.simpleName
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var layoutMgr: RecyclerView.LayoutManager
@@ -31,9 +34,14 @@ class TeamDetailsActivity : AppCompatActivity() {
             viewAdapter.notifyDataSetChanged()
         })
 
-        viewModel.loadTeamMembers(team.id,
-                success = { },
-                fail = { e -> showHttpErrorToast(this, e) }
+        viewModel.loadTeamUsers(team.id,
+                success = { Log.i(TAG, "Team users loading complete.") },
+                fail = { e ->
+                    run {
+                        Log.e(TAG, "Could not load team users. $e")
+                        showHttpErrorToast(this, e)
+                    }
+                }
         )
 
         layoutMgr = LinearLayoutManager(this)

@@ -10,7 +10,7 @@ object FirebaseAPI {
 
     fun fetchMessages(teamID: Int, loggedUserNickname: String, query: QuerySnapshot) : MutableList<Message> {
         val messages = mutableListOf<Message>()
-        Log.i(TAG, "Fetching messages")
+        Log.i(TAG, "Fetching messages...")
 
         for (i in 0 until query.size()) {
             val data = query.documents[i].data
@@ -25,7 +25,7 @@ object FirebaseAPI {
                 )
             }
         }
-        Log.i(TAG, "Messages fetched")
+        Log.i(TAG, "Fetching messages completed. Number of messages = ${messages.size}")
 
         return messages
     }

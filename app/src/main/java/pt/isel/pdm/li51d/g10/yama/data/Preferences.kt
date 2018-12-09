@@ -21,12 +21,12 @@ object Preferences {
             putString(key, value)
             apply()
         }
-        Log.i(TAG, "New Shared Preference added")
+        Log.i(TAG, "Shared Preference added with key $key")
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun get(key: String): String {
-        Log.i(TAG, "Getting Shared Preference")
+        Log.i(TAG, "Getting Shared Preference with key $key")
         return preferences.getString(key, "")
     }
 
@@ -36,6 +36,6 @@ object Preferences {
             remove(key)
             commit()
         }
-        Log.i(TAG, "Shared Preference removed")
+        Log.i(TAG, "Shared Preference removed with key $key")
     }
 }

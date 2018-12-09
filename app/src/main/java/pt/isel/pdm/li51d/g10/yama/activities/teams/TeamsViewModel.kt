@@ -26,18 +26,6 @@ class TeamsViewModel(private val repository: Repository) : ViewModel() {
     }
 
 
-
-
-
-    /*
-    fun loadLoggedUserAvatar(avatarUrl: String, success: (Bitmap) -> Unit, fail: (Exception) -> Unit) {
-        repository.getUserImage(avatarUrl, 250, 250, emptyMap(),
-                resp = success,
-                err  = fail
-        )
-    }
-    */
-
     /*
     //TODO: feature WIP (navigation drawer show teams the logged user is in)
     fun loadLoggedUserTeams(success: (Unit) -> Unit, fail: (Exception) -> Unit) {

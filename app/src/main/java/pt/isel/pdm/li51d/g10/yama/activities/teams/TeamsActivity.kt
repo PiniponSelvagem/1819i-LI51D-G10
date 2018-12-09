@@ -3,6 +3,7 @@ package pt.isel.pdm.li51d.g10.yama.activities.teams
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -81,8 +82,13 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         */
 
         viewModel.loadTeams(
-                success = { },   //TODO: not being used
-                fail    = { e -> showHttpErrorToast(this, e) }
+                success = { Log.i(TAG, "All teams loading complete.") },
+                fail    = { e ->
+                    run {
+                        Log.e(TAG, "Could not load all teams. $e")
+                        showHttpErrorToast(this, e)
+                    }
+                }
         )
 
         layoutMgr   = LinearLayoutManager(this)

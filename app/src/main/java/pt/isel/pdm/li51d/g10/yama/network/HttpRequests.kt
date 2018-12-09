@@ -40,7 +40,7 @@ object HttpRequests {
         req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
 
         queue.add(req)
-        Log.i(TAG, "Request for String registered")
+        Log.d(TAG, "Request for String registered")
     }
 
     private fun requestBitmap(
@@ -65,7 +65,7 @@ object HttpRequests {
         //req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
 
         queue.add(req)
-        Log.i(TAG, "Request for Bitmap registered")
+        Log.d(TAG, "Request for Bitmap registered")
     }
 
     fun getString(url: String, headers: Map<String, String> = mapOf(),
@@ -85,7 +85,7 @@ object HttpRequests {
 
     private fun onError(err: (Exception) -> Unit): Response.ErrorListener = Response.ErrorListener {
         e -> err(e)
-        Log.i(TAG, "Request generated an error")
+        Log.e(TAG, "Request generated an error")
     }
 
 

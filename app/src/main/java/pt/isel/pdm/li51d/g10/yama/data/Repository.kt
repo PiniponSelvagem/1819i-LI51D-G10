@@ -2,6 +2,7 @@ package pt.isel.pdm.li51d.g10.yama.data
 
 import android.annotation.SuppressLint
 import android.os.AsyncTask
+import android.util.Log
 import com.google.firebase.firestore.QuerySnapshot
 import org.json.JSONArray
 import org.json.JSONException
@@ -14,6 +15,8 @@ import pt.isel.pdm.li51d.g10.yama.data.database.user.User
 import pt.isel.pdm.li51d.g10.yama.utils.convertBitmapToBytes
 
 class Repository(private val db: YamaDatabase) {
+
+    private val TAG: String = Repository::class.java.simpleName
 
     // YamaDatabase LiveData
     val loggedUser   = db.loggedUser
@@ -47,7 +50,7 @@ class Repository(private val db: YamaDatabase) {
                             getUserAvatarLoggedUser(user, success)
                             success.invoke(Unit)
                         } catch (e: JSONException) {
-                            e.printStackTrace() //TODO: Logcat
+                            Log.e(TAG, "Unable to createLoggedUserFromWeb. $e")
                         }
                     }
                 },
@@ -78,7 +81,7 @@ class Repository(private val db: YamaDatabase) {
                             insertTeam(str)
                             success.invoke(Unit)
                         } catch (e: JSONException) {
-                            e.printStackTrace() //TODO: do logging
+                            Log.e(TAG, "Unable to createTeamFromWeb. $e")
                         }
                     }
                 },
@@ -114,7 +117,7 @@ class Repository(private val db: YamaDatabase) {
                             teamUsers(teamID, str, success, fail)
                             success.invoke(Unit)
                         } catch (e: JSONException) {
-                            e.printStackTrace() //TODO: do logging
+                            Log.e(TAG, "Unable to createTeamUsersFromWeb. $e")
                         }
                     }
                 },
@@ -133,7 +136,7 @@ class Repository(private val db: YamaDatabase) {
                                 val user = convertJsonToUser(JSONObject(str))
                                 getUserAvatarInTeam(teamID, user, success)
                             } catch (e: JSONException) {
-                                e.printStackTrace() //TODO: do logging
+                                Log.e(TAG, "Unable to teamUsers. $e")
                             }
                         }
                     },
@@ -152,7 +155,7 @@ class Repository(private val db: YamaDatabase) {
                     }
                 },
                 err = {
-                    //TODO: do logging
+                    Log.e(TAG, "Unable to getUserAvatarInTeam for user with id ${user.id} in teamID $teamID")
                 }
         )
     }
@@ -167,7 +170,7 @@ class Repository(private val db: YamaDatabase) {
                     }
                 },
                 err = {
-                    //TODO: do logging
+                    Log.e(TAG, "Unable to getUserAvatarLoggedUser for user with id ${user.id}")
                 }
         )
     }

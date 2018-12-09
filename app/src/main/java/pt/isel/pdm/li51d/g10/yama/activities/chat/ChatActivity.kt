@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import pt.isel.pdm.li51d.g10.yama.R
@@ -20,11 +21,10 @@ import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 import pt.isel.pdm.li51d.g10.yama.data.database.team.Team
 import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-
-
 
 class ChatActivity : AppCompatActivity() {
+
+    private val TAG: String = ChatActivity::class.java.simpleName
 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var layoutMgr: RecyclerView.LayoutManager
@@ -119,19 +119,19 @@ class ChatActivity : AppCompatActivity() {
         val t = messagesCollention.document(message.timestamp.toString())
 
         t.set(msg).addOnSuccessListener {
-            Log.i("THIS", "New billboard document has been saved")
+            Log.i(TAG, "New message document has been saved")
         }.addOnFailureListener {
-            Log.w("THIS", "New billboard document NOT saved", it)
+            Log.w(TAG, "New message document NOT saved", it)
         }
     }
 
     private fun updateMessages(querySnapshot: QuerySnapshot?) {
         if (querySnapshot != null) {
             viewModel.fetchMessages(team.id, querySnapshot)
-            Log.i("THIS", "Collection updated")
+            Log.i(TAG, "Collection updated")
         }
         else {
-            Log.i("THIS", "collection came null")
+            Log.i(TAG, "collection came null")
         }
     }
 }

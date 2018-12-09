@@ -1,6 +1,7 @@
 package pt.isel.pdm.li51d.g10.yama.data.database
 
 import android.os.AsyncTask
+import android.util.Log
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import pt.isel.pdm.li51d.g10.yama.R
@@ -26,6 +27,8 @@ abstract class YamaRoomDatabase : RoomDatabase() {
 
 class PopulateDbAsync internal constructor(db: YamaRoomDatabase) : AsyncTask<Void, Void, Void>() {
 
+    private val TAG: String = PopulateDbAsync::class.java.simpleName
+
     private val teamUserDao: TeamUserDao = db.teamUserDao()
     private val teamDao:     TeamDao     = db.teamDao()
     private val userDao:     UserDao     = db.userDao()
@@ -33,10 +36,12 @@ class PopulateDbAsync internal constructor(db: YamaRoomDatabase) : AsyncTask<Voi
 
     override fun doInBackground(vararg params: Void): Void? {
         if (Preferences.get(R.string.spKey__logged_id.toString()) == "") {
+            Log.i(TAG, "Deleting all data")
             teamUserDao.deleteAll()
             teamDao.deleteAll()
             userDao.deleteAll()
             messageDao.deleteAll()
+            Log.i(TAG, "All data has been deleted")
         }
 
         /*
