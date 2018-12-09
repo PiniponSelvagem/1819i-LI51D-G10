@@ -72,18 +72,6 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         })
         */
 
-        /*TODO
-        viewModel.loadLoggedUserAvatar(viewModel.loggedUser.value!!.avatarUrl,
-                success = { bitmap ->
-                    //TODO: viewModel.loggedUser.value?.avatar = bitmap
-                    run {
-                        //TODO: headerView.user_avatar_drawer.setImageBitmap(viewModel.loggedUser.value?.avatar)
-                    }
-                },
-                fail = { e -> showHttpErrorToast(this, e) }
-        )
-        */
-
         /*
         //TODO: feature WIP (navigation drawer show teams the logged user is in)
         viewModel.loadLoggedUserTeams(

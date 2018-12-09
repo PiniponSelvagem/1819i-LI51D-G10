@@ -12,6 +12,7 @@ import pt.isel.pdm.li51d.g10.yama.utils.hideKeyboard
 import pt.isel.pdm.li51d.g10.yama.utils.showHttpErrorToast
 import pt.isel.pdm.li51d.g10.yama.utils.viewModel
 
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var viewModel: LoginViewModel
@@ -28,25 +29,16 @@ class LoginActivity : AppCompatActivity() {
         if(savedInstanceState != null)
             isConnecting = savedInstanceState.getBoolean("is_connecting")
 
-        if (isConnecting)
+        if (!viewModel.shouldAcceptNewCredentials()) {
+            if (isConnecting) { disableInteraction() }
+            else { enableInteractionOnlyLoginButton() }
+        } else if (isConnecting) {
             disableInteraction()
+        }
 
         login_button.setOnClickListener {
             viewModel.saveCredentials(login_orgID.text.toString(), login_token.text.toString())
-
-            disableInteraction()
-            viewModel.loginUser(
-                    success = {
-                        startActivity(Intent(this, TeamsActivity::class.java))
-                        finish()
-                    },
-                    fail = { e ->
-                        run {
-                            enableInteraction()
-                            showHttpErrorToast(this, e)
-                        }
-                    }
-            )
+            login()
         }
 
         login_root.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
@@ -56,10 +48,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    @Override
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("is_connecting", isConnecting)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun login() {
+        disableInteraction()
+        viewModel.loginUser(
+                success = {
+                    startActivity(Intent(this, TeamsActivity::class.java))
+                    finish()
+                },
+                fail = { e ->
+                    run {
+                        enableInteraction()
+                        showHttpErrorToast(this, e)
+                    }
+                }
+        )
     }
 
     private fun disableInteraction() {
@@ -69,6 +76,15 @@ class LoginActivity : AppCompatActivity() {
         login_orgID.isEnabled = false
         login_button.visibility = View.INVISIBLE
         login_progressBar.visibility = View.VISIBLE
+    }
+
+    private fun enableInteractionOnlyLoginButton() {
+        isConnecting = false
+        login_root.requestFocus()
+        login_token.isEnabled = false
+        login_orgID.isEnabled = false
+        login_button.visibility = View.VISIBLE
+        login_progressBar.visibility = View.INVISIBLE
     }
 
     private fun enableInteraction() {

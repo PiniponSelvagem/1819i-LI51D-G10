@@ -11,6 +11,14 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         repository.loginUser(success, fail)
     }
 
+    /*
+        Returns false if logged_id is in shared preferences, user had
+        previously successful login.
+     */
+    fun shouldAcceptNewCredentials() : Boolean {
+        return (repository.getSharedPreference(R.string.spKey__logged_id.toString()) == "")
+    }
+
     fun checkCredentials(orgID: EditText, token: EditText) {
         orgID.setText(repository.getSharedPreference(R.string.spKey__login_orgID.toString()))
         token.setText(repository.getSharedPreference(R.string.spKey__login_token.toString()))

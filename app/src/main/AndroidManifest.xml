@@ -27,6 +27,7 @@
         <activity
             android:theme="@style/AppTheme_NoActionBar_ColoredStatusBar"
             android:name=".activities.teams.TeamsActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_teams" />
         <activity android:name=".activities.chat.ChatActivity" />
         <activity android:name=".activities.teamdetails.TeamDetailsActivity" />
