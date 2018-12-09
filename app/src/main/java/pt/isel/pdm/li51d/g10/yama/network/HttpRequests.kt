@@ -12,7 +12,8 @@ import com.android.volley.toolbox.Volley
 
 
 object HttpRequests {
-    val TAG: String = HttpRequests::class.java.simpleName;
+
+    private val TAG: String = HttpRequests::class.java.simpleName
 
     private lateinit var queue: RequestQueue
 
@@ -37,7 +38,9 @@ object HttpRequests {
 
         //info (maybe for later use): https://stackoverflow.com/a/32879935
         req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
+
         queue.add(req)
+        Log.i(TAG, "Request for String registered")
     }
 
     private fun requestBitmap(
@@ -62,6 +65,7 @@ object HttpRequests {
         //req.setShouldCache(false) //dont cache data, which would send old data to the viewModel (LiveData)
 
         queue.add(req)
+        Log.i(TAG, "Request for Bitmap registered")
     }
 
     fun getString(url: String, headers: Map<String, String> = mapOf(),
@@ -76,10 +80,12 @@ object HttpRequests {
 
     private fun <T> onResponse(resp: (T) -> Unit): Response.Listener<T> = Response.Listener {
         r -> resp(r)
+        Log.i(TAG, "Request was successful")
     }
 
     private fun onError(err: (Exception) -> Unit): Response.ErrorListener = Response.ErrorListener {
         e -> err(e)
+        Log.i(TAG, "Request generated an error")
     }
 
 

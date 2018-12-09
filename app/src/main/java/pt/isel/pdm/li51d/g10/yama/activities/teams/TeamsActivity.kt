@@ -36,6 +36,8 @@ class TeamsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
     private lateinit var viewModel: TeamsViewModel
 
+    private val TAG: String = TeamsActivity::class.java.simpleName
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,12 +1,16 @@
 package pt.isel.pdm.li51d.g10.yama.data
 
+import android.util.Log
 import com.google.firebase.firestore.QuerySnapshot
 import pt.isel.pdm.li51d.g10.yama.data.database.message.Message
 
 object FirebaseAPI {
 
+    private val TAG: String = FirebaseAPI::class.java.simpleName
+
     fun fetchMessages(teamID: Int, loggedUserNickname: String, query: QuerySnapshot) : MutableList<Message> {
         val messages = mutableListOf<Message>()
+        Log.i(TAG, "Fetching messages")
 
         for (i in 0 until query.size()) {
             val data = query.documents[i].data
@@ -21,6 +25,7 @@ object FirebaseAPI {
                 )
             }
         }
+        Log.i(TAG, "Messages fetched")
 
         return messages
     }

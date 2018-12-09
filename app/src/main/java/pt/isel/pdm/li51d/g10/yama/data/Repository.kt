@@ -200,4 +200,5 @@ class Repository(private val db: YamaDatabase) {
         }
         db.getMessagesForTeam(teamId)
     }
+
 }
