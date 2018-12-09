@@ -8,4 +8,4 @@ Repository for the winter semester 2018/2019, LI51D Group 10.
 * **43609** - Valentim Caires - [valentimc](https://github.com/valentimc)
 
 ## Report
-The report is in the [wiki](https://github.com/isel-leic-pdm/1819i-LI51D-G10/wiki/Report) page of that repository.
+Report is in the section [wiki](https://github.com/isel-leic-pdm/1819i-LI51D-G10/wiki/Report).
